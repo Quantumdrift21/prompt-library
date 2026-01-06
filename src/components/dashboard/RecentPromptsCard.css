@@ -1,0 +1,147 @@
+/* ========================================
+   Recent Prompts - Premium Glass List
+   ======================================== */
+
+.recent-prompts-card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    box-shadow: var(--glass-shadow);
+    backdrop-filter: var(--glass-blur);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.recent-prompts-card__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.recent-prompts-card__title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--color-text);
+    margin: 0;
+}
+
+.recent-prompts-card__view-all {
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--accent-primary);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.recent-prompts-card__view-all:hover {
+    color: var(--color-text);
+    text-shadow: 0 0 8px var(--accent-primary);
+}
+
+.recent-prompts-card__list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    /* Tighter gap */
+    max-height: 320px;
+    overflow-y: auto;
+    padding-right: 4px;
+    flex: 1;
+}
+
+/* Scrollbar */
+.recent-prompts-card__list::-webkit-scrollbar {
+    width: 4px;
+}
+
+.recent-prompts-card__list::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.recent-prompts-card__list::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+}
+
+.recent-prompts-card__empty {
+    text-align: center;
+    padding: 32px;
+    color: var(--color-text-muted);
+    font-size: 0.9rem;
+}
+
+/* Item */
+.recent-prompts-card__item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid transparent;
+    border-radius: var(--radius-md);
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.recent-prompts-card__item:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.1);
+    transform: translateX(4px);
+}
+
+.recent-prompts-card__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background: rgba(139, 92, 246, 0.1);
+    border: 1px solid rgba(139, 92, 246, 0.2);
+    border-radius: var(--radius-sm);
+    color: var(--accent-primary);
+    flex-shrink: 0;
+}
+
+.recent-prompts-card__info {
+    flex: 1;
+    min-width: 0;
+}
+
+.recent-prompts-card__name {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--color-text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 2px;
+}
+
+.recent-prompts-card__author {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+}
+
+.recent-prompts-card__meta {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 4px;
+}
+
+.recent-prompts-card__time {
+    font-size: 0.7rem;
+    color: var(--color-text-muted);
+}
+
+.recent-prompts-card__usage {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--accent-secondary);
+    /* Cyan for usage */
+}

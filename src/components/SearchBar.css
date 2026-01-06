@@ -1,0 +1,95 @@
+/* ========================================
+   Search Bar - Floating Glass Input
+   ======================================== */
+
+.search-bar {
+    position: relative;
+    width: 100%;
+    margin-bottom: 0;
+    /* Handled by container gap */
+}
+
+.search-bar__input {
+    width: 100%;
+    padding: 16px 20px 16px 52px;
+    /* Left padding for icon */
+    font-size: 1.1rem;
+
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: var(--radius-full);
+    /* Pill shape like reference? Or rounded rect? Reference implies pill/rounded */
+    border-radius: var(--radius-lg);
+    /* Matching card radius for consistency */
+
+    color: #fff;
+    transition: all 0.3s var(--ease-spring);
+    backdrop-filter: blur(12px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.search-bar__input::placeholder {
+    color: rgba(255, 255, 255, 0.3);
+}
+
+.search-bar__input:focus {
+    outline: none;
+    background: rgba(255, 255, 255, 0.07);
+    border-color: rgba(139, 92, 246, 0.5);
+    /* Violet glow */
+    box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.1), 0 10px 30px rgba(0, 0, 0, 0.3);
+    transform: translateY(-2px);
+}
+
+/* Icon */
+.search-bar__icon {
+    position: absolute;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.2rem;
+    opacity: 0.5;
+    pointer-events: none;
+    filter: grayscale(100%);
+    transition: all 0.3s;
+}
+
+.search-bar__input:focus+.search-bar__icon,
+.search-bar__input:not(:placeholder-shown)+.search-bar__icon {
+    /* This selector won't work perfectly for preceding sibling, need JS or icon inside container */
+    /* Actually icon IS inside container before input? No, typically after. 
+      Structure: div > icon, input 
+   */
+}
+
+.search-bar:focus-within .search-bar__icon {
+    opacity: 1;
+    filter: grayscale(0%);
+    text-shadow: 0 0 10px rgba(34, 211, 238, 0.8);
+    /* Cyan glow */
+}
+
+/* Clear Button */
+.search-bar__clear {
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: rgba(255, 255, 255, 0.6);
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 12px;
+    transition: all 0.2s;
+}
+
+.search-bar__clear:hover {
+    background: rgba(255, 255, 255, 0.2);
+    color: #fff;
+}

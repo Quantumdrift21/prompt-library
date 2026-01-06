@@ -1,0 +1,97 @@
+/* ========================================
+   Usage Chart - Premium Glass
+   ======================================== */
+
+.usage-chart {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    box-shadow: var(--glass-shadow);
+    backdrop-filter: var(--glass-blur);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.usage-chart__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.usage-chart__title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--color-text);
+    margin: 0;
+}
+
+.usage-chart__legend {
+    display: flex;
+    gap: 16px;
+}
+
+.usage-chart__legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+}
+
+.usage-chart__legend-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--accent-primary);
+    box-shadow: 0 0 8px rgba(139, 92, 246, 0.4);
+}
+
+.usage-chart__graph {
+    flex: 1;
+    width: 100%;
+    position: relative;
+    /* Ensure graph fits container */
+    overflow: hidden;
+}
+
+.usage-chart__graph svg {
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+}
+
+.usage-chart__area {
+    opacity: 0.8;
+    transition: d 0.3s ease;
+}
+
+.usage-chart__line {
+    filter: drop-shadow(0 0 4px rgba(139, 92, 246, 0.5));
+    transition: d 0.3s ease;
+}
+
+.usage-chart__point {
+    transition: r 0.2s ease, fill 0.2s ease;
+    cursor: pointer;
+}
+
+.usage-chart__point:hover {
+    r: 5;
+    fill: var(--color-bg);
+    stroke-width: 3;
+}
+
+.usage-chart__labels {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 12px;
+    padding: 0 10px;
+}
+
+.usage-chart__label {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+}

@@ -1,0 +1,138 @@
+/* ========================================
+   Prompt Library - Premium Dark System
+   Reference-Matched Aesthetic
+   ======================================== */
+
+:root {
+  /* Core Palette - Deep Violet/Black Theme */
+  --base-dark: #030304;
+  /* Almost pure black */
+  --base-light: #ffffff;
+
+  /* Brand Accents - Vibrant & Electric */
+  --accent-primary: #8b5cf6;
+  /* Electric Violet */
+  --accent-secondary: #22d3ee;
+  /* Cyan/Teal highlight */
+  --accent-gradient: linear-gradient(135deg, #8b5cf6 0%, #22d3ee 100%);
+
+  --color-danger: #ff4d4d;
+  --color-success: #00e676;
+  --color-warning: #ffab00;
+
+  /* Typography */
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  /* Spacing */
+  --spacing-xs: 6px;
+  --spacing-sm: 12px;
+  --spacing-md: 20px;
+  --spacing-lg: 32px;
+  --spacing-xl: 48px;
+
+  /* Radius - Softer, Modern */
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  /* Matches the large card radius in reference */
+  --radius-full: 9999px;
+
+  /* Animation */
+  --ease-spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  --ease-smooth: cubic-bezier(0.33, 1, 0.68, 1);
+  --transition-normal: 0.3s var(--ease-smooth);
+}
+
+/* 
+   FORCED DARK THEME 
+   (Since user requested the dark UI reference, we default to this)
+*/
+:root {
+  /* Background: Deep, rich radial gradient */
+  --color-bg: #030304;
+  --color-bg-gradient: radial-gradient(circle at 50% 0%, #17153b 0%, #030304 60%);
+
+  /* Surface: Glassy, very subtle */
+  --color-surface: rgba(255, 255, 255, 0.03);
+  --color-surface-hover: rgba(255, 255, 255, 0.07);
+
+  /* Borders: Barely visible, let the shadow and glow do the work */
+  --color-border: rgba(255, 255, 255, 0.06);
+  --color-border-hover: rgba(255, 255, 255, 0.15);
+
+  /* Text */
+  --color-text: #ffffff;
+  --color-text-muted: #94a3b8;
+  /* Cool grey */
+
+  /* Glass Effects */
+  --glass-blur: blur(24px);
+  --glass-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  --glass-shadow-hover: 0 0 0 1px rgba(139, 92, 246, 0.3), 0 10px 40px rgba(0, 0, 0, 0.7);
+
+  /* Compatibility vars */
+  --color-primary: #8b5cf6;
+  --color-favorite: #fbbf24;
+}
+
+html {
+  transition: none;
+  /* Removed jarring global transition */
+  font-size: 14px;
+  /* Fix zoomed feel - denser UI */
+}
+
+body {
+  font-family: var(--font-sans);
+  background: var(--color-bg);
+  background-image: var(--color-bg-gradient);
+  background-attachment: fixed;
+  color: var(--color-text);
+  line-height: 1.6;
+  min-height: 100vh;
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+}
+
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* Focus */
+:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

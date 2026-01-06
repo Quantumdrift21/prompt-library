@@ -1,0 +1,113 @@
+/* ========================================
+   Engagement Gauge - Glass
+   ======================================== */
+
+.engagement-gauge {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    box-shadow: var(--glass-shadow);
+    backdrop-filter: var(--glass-blur);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.engagement-gauge__header {
+    margin-bottom: 24px;
+}
+
+.engagement-gauge__title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--color-text);
+    margin: 0;
+}
+
+.engagement-gauge__content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+}
+
+.engagement-gauge__arc-container {
+    position: relative;
+    width: 180px;
+    height: 100px;
+}
+
+.engagement-gauge__arc {
+    width: 100%;
+    height: 100%;
+    filter: drop-shadow(0 0 8px rgba(139, 92, 246, 0.3));
+}
+
+.engagement-gauge__progress {
+    transition: stroke-dasharray 0.8s ease;
+}
+
+.engagement-gauge__value-container {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: baseline;
+    gap: 2px;
+    text-shadow: 0 0 16px rgba(139, 92, 246, 0.5);
+}
+
+.engagement-gauge__value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--accent-primary);
+}
+
+.engagement-gauge__percent {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+}
+
+.engagement-gauge__labels {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-top: 16px;
+    padding: 0 8px;
+}
+
+.engagement-gauge__label {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+}
+
+.engagement-gauge__status {
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--accent-secondary);
+    background: rgba(34, 211, 238, 0.1);
+    padding: 4px 12px;
+    border-radius: 12px;
+    border: 1px solid rgba(34, 211, 238, 0.2);
+}
+
+/* Mobile */
+@media (max-width: 767px) {
+    .engagement-gauge {
+        padding: 20px;
+    }
+
+    .engagement-gauge__arc-container {
+        width: 140px;
+        height: 78px;
+    }
+
+    .engagement-gauge__value {
+        font-size: 1.5rem;
+    }
+}

@@ -1,0 +1,94 @@
+/* ========================================
+   Output Card - Glass Stats
+   ======================================== */
+
+.output-card {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    height: 100%;
+}
+
+.output-card__item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px;
+    border-radius: var(--radius-lg);
+    transition: all 0.2s ease;
+    backdrop-filter: blur(10px);
+    border: 1px solid transparent;
+    flex: 1;
+}
+
+.output-card__item:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.1);
+}
+
+.output-card__item--purple {
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.2) 0%, rgba(167, 139, 250, 0.1) 100%);
+    color: white;
+    box-shadow: 0 4px 16px rgba(139, 92, 246, 0.15);
+    border-color: rgba(139, 92, 246, 0.2);
+}
+
+.output-card__item--red {
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.2) 0%, rgba(248, 113, 113, 0.1) 100%);
+    color: white;
+    box-shadow: 0 4px 16px rgba(239, 68, 68, 0.15);
+    border-color: rgba(239, 68, 68, 0.2);
+}
+
+.output-card__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    flex-shrink: 0;
+}
+
+.output-card__icon svg {
+    width: 22px;
+    height: 22px;
+}
+
+.output-card__info {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.output-card__label {
+    font-size: 0.8rem;
+    opacity: 0.8;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.output-card__value {
+    font-size: 1.375rem;
+    font-weight: 700;
+    margin-top: 2px;
+    text-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+/* Tablet & Mobile */
+@media (max-width: 1023px) {
+    .output-card {
+        flex-direction: row;
+    }
+
+    .output-card__item {
+        flex: 1;
+    }
+}
+
+@media (max-width: 767px) {
+    .output-card {
+        flex-direction: column;
+    }
+}

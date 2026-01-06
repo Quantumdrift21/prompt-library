@@ -1,0 +1,192 @@
+/* ========================================
+   Prompt Editor - Premium Glass
+   ======================================== */
+
+.prompt-editor {
+    background: var(--color-surface);
+    backdrop-filter: blur(24px);
+    /* Heavier blur for modal focus */
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: 32px;
+    box-shadow: var(--glass-shadow-hover);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Add a subtle top highlight */
+.prompt-editor::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+}
+
+.prompt-editor__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.prompt-editor__header h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--color-text);
+    letter-spacing: -0.02em;
+}
+
+.prompt-editor__close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    font-size: 1.25rem;
+    color: var(--color-text-muted);
+    border-radius: var(--radius-full);
+    transition: all var(--transition-fast);
+}
+
+.prompt-editor__close:hover {
+    color: var(--color-text);
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.prompt-editor__field {
+    margin-bottom: 24px;
+}
+
+.prompt-editor__field label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--color-text-muted);
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.prompt-editor__field input,
+.prompt-editor__field textarea {
+    width: 100%;
+    padding: 14px 18px;
+    background: rgba(0, 0, 0, 0.2);
+    /* Deep well */
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    font-size: 1rem;
+    color: var(--color-text);
+    transition: all var(--transition-fast);
+    font-family: inherit;
+}
+
+.prompt-editor__field input:focus,
+.prompt-editor__field textarea:focus {
+    background: rgba(0, 0, 0, 0.3);
+    border-color: var(--accent-primary);
+    box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.15);
+    outline: none;
+}
+
+.prompt-editor__field input::placeholder,
+.prompt-editor__field textarea::placeholder {
+    color: rgba(255, 255, 255, 0.2);
+}
+
+.prompt-editor__field textarea {
+    min-height: 180px;
+    line-height: 1.6;
+    resize: vertical;
+}
+
+.prompt-editor__favorite {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    margin-bottom: 32px;
+    font-size: 0.95rem;
+    color: var(--color-text);
+    user-select: none;
+}
+
+.prompt-editor__favorite input {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--color-warning);
+    cursor: pointer;
+}
+
+.prompt-editor__actions {
+    display: flex;
+    gap: 16px;
+    justify-content: flex-end;
+    padding-top: 24px;
+    border-top: 1px solid var(--color-border);
+}
+
+.prompt-editor__cancel,
+.prompt-editor__save {
+    padding: 12px 32px;
+    border-radius: var(--radius-md);
+    font-size: 0.95rem;
+    font-weight: 500;
+    transition: all var(--transition-fast);
+    cursor: pointer;
+}
+
+.prompt-editor__cancel {
+    background: transparent;
+    border: 1px solid var(--color-border);
+    color: var(--color-text-muted);
+}
+
+.prompt-editor__cancel:hover {
+    border-color: var(--color-text);
+    color: var(--color-text);
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.prompt-editor__save {
+    background: var(--color-text);
+    /* High contrast white button */
+    color: var(--base-dark);
+    /* Black text */
+    border: none;
+    font-weight: 600;
+    box-shadow: 0 4px 12px rgba(255, 255, 255, 0.15);
+}
+
+.prompt-editor__save:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(255, 255, 255, 0.2);
+}
+
+.prompt-editor__save:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Mobile */
+@media (max-width: 767px) {
+    .prompt-editor {
+        padding: 20px;
+    }
+
+    .prompt-editor__actions {
+        flex-direction: column;
+    }
+
+    .prompt-editor__cancel,
+    .prompt-editor__save {
+        width: 100%;
+        text-align: center;
+    }
+}

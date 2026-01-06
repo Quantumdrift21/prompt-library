@@ -1,0 +1,219 @@
+/* ========================================
+   Dashboard Nav - Floating Glass
+   ======================================== */
+
+.dashboard-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 24px;
+
+    /* Active Glass */
+    background: var(--color-surface);
+    backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-full);
+    box-shadow: var(--glass-shadow);
+
+    position: sticky;
+    top: 24px;
+    z-index: 100;
+    transition: all 0.3s ease;
+    width: 100%;
+}
+
+.dashboard-nav__left {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
+
+/* Logo */
+.dashboard-nav__logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+    opacity: 0.9;
+    transition: opacity 0.2s;
+}
+
+.dashboard-nav__logo:hover {
+    opacity: 1;
+}
+
+.dashboard-nav__logo-icon {
+    width: 28px;
+    height: 28px;
+    filter: drop-shadow(0 0 8px rgba(139, 92, 246, 0.3));
+}
+
+.dashboard-nav__logo-text {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--color-text);
+    letter-spacing: -0.01em;
+}
+
+/* Search Island */
+/* Search Island */
+.dashboard-nav__search {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 16px 10px 20px;
+    /* More padding for pill shape */
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: var(--radius-full);
+    min-width: 380px;
+    /* Wider for better presence */
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    /* Subtle border */
+    transition: all 0.3s var(--ease-spring);
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+    /* Inner depth */
+}
+
+.dashboard-nav__search:focus-within {
+    background: rgba(255, 255, 255, 0.07);
+    border-color: rgba(139, 92, 246, 0.5);
+    /* Violet glow */
+    box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.1), 0 10px 30px rgba(0, 0, 0, 0.3);
+    transform: translateY(-1px);
+    width: 420px;
+    /* Subtle expansion on focus */
+}
+
+.dashboard-nav__search-icon {
+    width: 18px;
+    height: 18px;
+    color: var(--color-text-muted);
+    transition: all 0.3s;
+    opacity: 0.7;
+}
+
+.dashboard-nav__search:focus-within .dashboard-nav__search-icon {
+    color: var(--accent-secondary);
+    /* Cyan glow icon */
+    opacity: 1;
+    filter: drop-shadow(0 0 5px rgba(34, 211, 238, 0.5));
+}
+
+.dashboard-nav__search-input {
+    flex: 1;
+    border: none;
+    background: transparent;
+    font-size: 0.95rem;
+    color: var(--color-text);
+    outline: none;
+    font-weight: 500;
+}
+
+.dashboard-nav__search-input::placeholder {
+    color: rgba(255, 255, 255, 0.3);
+    font-weight: 400;
+}
+
+/* Right Actions */
+.dashboard-nav__right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.dashboard-nav__icon-btn {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: transparent;
+    color: var(--color-text-muted);
+    transition: all 0.2s;
+}
+
+.dashboard-nav__icon-btn:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--color-text);
+}
+
+.dashboard-nav__notification-dot {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 6px;
+    height: 6px;
+    background: var(--color-danger);
+    border-radius: 50%;
+    box-shadow: 0 0 0 2px var(--color-bg);
+    /* Mask to match whatever is behind? Use actual bg color if solid, else tough */
+}
+
+/* User Profile */
+.dashboard-nav__user {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 4px 12px 4px 4px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: var(--radius-full);
+    border: 1px solid var(--color-border);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.dashboard-nav__user:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: var(--color-text-muted);
+}
+
+.dashboard-nav__avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #333, #555);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 600;
+    font-size: 0.8rem;
+    overflow: hidden;
+    position: relative;
+}
+
+.dashboard-nav__avatar::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.dashboard-nav__user-name {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--color-text);
+}
+
+/* Media Queries */
+@media (max-width: 1023px) {
+
+    .dashboard-nav__logo-text,
+    .dashboard-nav__user-name {
+        display: none;
+    }
+
+    .dashboard-nav__search {
+        min-width: auto;
+    }
+}
+
+@media (max-width: 768px) {
+    .dashboard-nav {
+        /* Mobile nav often simpler */
+    }
+}
