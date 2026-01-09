@@ -1,10 +1,14 @@
-import { useState, useCallback, useEffect, useRef, useMemo } from 'react';
+import { useState, useCallback, useEffect, useMemo } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import type { Prompt, CreatePromptInput } from './types';
-import { SearchBar, PromptList, PromptEditor, AuthButton, EmptyState, FilterBar, ErrorBoundary } from './components';
-import { type SortOption } from './components/FilterBar';
-import { DashboardNav, IconSidebar } from './components/dashboard';
+import { PromptList, PromptEditor, EmptyState, ErrorBoundary } from './components';
+import { HeroSection } from './components/HeroSection';
+import { DashboardNav } from './components/dashboard';
 import { ProfileDashboard } from './pages/ProfileDashboard';
+import { Collections } from './pages/Collections';
+import { Analytics } from './pages/Analytics';
+import SettingsPage from './pages/SettingsPage';
+import { LandingPage } from './pages/LandingPage';
 import { indexedDbService } from './services/indexedDb';
 import { syncService } from './services/syncService';
 import { useCopy, useDebounce, useKeyboardShortcuts, useAuth } from './hooks';
@@ -20,49 +24,25 @@ function PromptLibrary() {
   const [isLoading, setIsLoading] = useState(true);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
 
-  // Sorting & Filtering State
-  const [sortOption, setSortOption] = useState<SortOption>('recent');
-  const [selectedTags, setSelectedTags] = useState<Set<string>>(new Set());
-
-  const searchInputRef = useRef<HTMLInputElement>(null);
-  const { copiedId, copyPrompt } = useCopy();
-
   const userName = user?.email?.split('@')[0] || 'Guest';
+  const { copiedId, copyPrompt } = useCopy();
 
   // Keyboard shortcuts
   useKeyboardShortcuts({
-    onFocusSearch: () => searchInputRef.current?.focus(),
+    onFocusSearch: () => { },
     onCreateNew: () => setIsCreating(true),
     onEscape: () => {
       setEditingPrompt(null);
       setIsCreating(false);
       setSelectedIds(new Set());
-      searchInputRef.current?.blur();
     },
   });
-
-  // Handle Tag Selection
-  const handleToggleTag = useCallback((tag: string) => {
-    setSelectedTags(prev => {
-      const next = new Set(prev);
-      if (next.has(tag)) next.delete(tag);
-      else next.add(tag);
-      return next;
-    });
-  }, []);
-
-  const handleClearFilters = useCallback(() => {
-    setSelectedTags(new Set());
-    setSortOption('recent');
-    setSearchQuery(''); // Optional: clear search too? Maybe just filters.
-  }, []);
 
   const refreshPrompts = useCallback(async () => {
     const data = await indexedDbService.getAll();
     setPrompts(data);
   }, []);
 
-  // Initialize and load prompts from IndexedDB on mount and when user changes
   useEffect(() => {
     const loadPrompts = async () => {
       setIsLoading(true);
@@ -73,22 +53,17 @@ function PromptLibrary() {
     loadPrompts();
   }, [user?.id]);
 
-  // Subscribe to background sync updates to refresh UI
   useEffect(() => {
-    // track last sync time to avoid redundant refreshes
     let lastSyncTime = syncService.getStatus().lastSyncAt;
-
     const unsubscribe = syncService.subscribe((status) => {
       if (status.lastSyncAt && status.lastSyncAt !== lastSyncTime) {
         lastSyncTime = status.lastSyncAt;
         refreshPrompts();
       }
     });
-
     return unsubscribe;
   }, [refreshPrompts]);
 
-  // Filter prompts based on debounced search query
   useEffect(() => {
     const doSearch = async () => {
       if (debouncedQuery) {
@@ -102,40 +77,13 @@ function PromptLibrary() {
     doSearch();
   }, [debouncedQuery]);
 
-  // Calculate available tags from all prompts
-  const availableTags = useMemo(() => {
-    const tags = new Set<string>();
-    prompts.forEach(p => (p.tags || []).forEach(t => tags.add(t)));
-    return Array.from(tags).sort();
-  }, [prompts]);
-
-  // Filter & Sort Prompts
   const sortedPrompts = useMemo(() => {
-    let result = [...prompts];
-
-    // 1. Filter by Tags
-    if (selectedTags.size > 0) {
-      result = result.filter(p => (p.tags || []).some(t => selectedTags.has(t)));
-    }
-
-    // 2. Sort
-    return result.sort((a, b) => {
-      // Always keep favorites on top (preserving existing behavior)
+    return [...prompts].sort((a, b) => {
       if (a.favorite && !b.favorite) return -1;
       if (!a.favorite && b.favorite) return 1;
-
-      switch (sortOption) {
-        case 'alphabetical':
-          return a.title.localeCompare(b.title);
-        case 'usage':
-          // Placeholder for usage count sort, fallback to recent
-          return new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime();
-        case 'recent':
-        default:
-          return new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime();
-      }
+      return new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime();
     });
-  }, [prompts, selectedTags, sortOption]);
+  }, [prompts]);
 
   const handleCreate = useCallback(async (data: CreatePromptInput) => {
     await indexedDbService.create(data);
@@ -169,15 +117,11 @@ function PromptLibrary() {
     setIsCreating(false);
   }, []);
 
-  // Bulk selection handlers
   const handleToggleSelect = useCallback((id: string) => {
     setSelectedIds(prev => {
       const next = new Set(prev);
-      if (next.has(id)) {
-        next.delete(id);
-      } else {
-        next.add(id);
-      }
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
       return next;
     });
   }, []);
@@ -202,12 +146,8 @@ function PromptLibrary() {
 
   if (isLoading) {
     return (
-      <div className="prompt-library">
-        <DashboardNav
-          userName={userName}
-          searchQuery={searchQuery}
-          onSearchChange={setSearchQuery}
-        />
+      <div className="app-container">
+        <DashboardNav userName={userName} />
         <div className="prompt-library__loading">
           <div className="prompt-library__spinner"></div>
           <span>Loading prompts...</span>
@@ -217,53 +157,29 @@ function PromptLibrary() {
   }
 
   return (
-    <div className="prompt-library">
-      <DashboardNav
-        userName={userName}
+    <div className="app-container">
+      <DashboardNav userName={userName} />
+
+      <HeroSection
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
       />
 
-      <div className="prompt-library__layout">
-        <IconSidebar />
-
-        <main className="prompt-library__main">
-          <div className="prompt-library__header">
-            <div className="prompt-library__title-row">
-              <h1 className="prompt-library__title">My Prompts</h1>
-              <span className="prompt-library__count">{prompts.length} prompts</span>
-            </div>
-            {/* SearchBar removed - moved to DashboardNav */}
-          </div>
-
-          <FilterBar
-            sortOption={sortOption}
-            onSortChange={setSortOption}
-            availableTags={availableTags}
-            selectedTags={selectedTags}
-            onToggleTag={handleToggleTag}
-            onClearFilters={handleClearFilters}
-            totalCount={prompts.length}
-            shownCount={sortedPrompts.length}
-          />
+      <main className="main-content">
+        <section className="category-section">
+          <h2 className="section-title">CATEGORY</h2>
 
           {hasSelection && (
-            <div className="prompt-library__bulk-actions">
-              <span className="prompt-library__bulk-count">{selectedIds.size} selected</span>
-              <button className="prompt-library__bulk-btn" onClick={handleBulkCopy}>
-                Copy All
-              </button>
-              <button className="prompt-library__bulk-btn prompt-library__bulk-btn--danger" onClick={handleBulkDelete}>
-                Delete
-              </button>
-              <button className="prompt-library__bulk-btn" onClick={() => setSelectedIds(new Set())}>
-                Cancel
-              </button>
+            <div className="bulk-actions">
+              <span className="bulk-actions__count">{selectedIds.size} selected</span>
+              <button className="btn-secondary" onClick={handleBulkCopy}>Copy All</button>
+              <button className="btn-secondary btn-secondary--danger" onClick={handleBulkDelete}>Delete</button>
+              <button className="btn-secondary" onClick={() => setSelectedIds(new Set())}>Cancel</button>
             </div>
           )}
 
           {showEditor && (
-            <div className="prompt-library__editor">
+            <div className="editor-container">
               <PromptEditor
                 prompt={editingPrompt}
                 onSave={editingPrompt ? handleUpdate : handleCreate}
@@ -273,7 +189,7 @@ function PromptLibrary() {
             </div>
           )}
 
-          <div className="prompt-library__list">
+          <div className="prompts-grid">
             {sortedPrompts.length === 0 ? (
               <EmptyState
                 type={debouncedQuery ? 'no-results' : 'no-prompts'}
@@ -292,9 +208,19 @@ function PromptLibrary() {
               />
             )}
           </div>
-        </main>
-      </div>
-    </div >
+        </section>
+
+        {/* Submit Your Prompt Section */}
+        <section className="submit-section">
+          <div className="submit-section__content">
+            <h2 className="section-title">SUBMIT YOUR PROMPT</h2>
+            <button className="btn-primary" onClick={() => setIsCreating(true)}>
+              SHARE YOUR IDEA
+            </button>
+          </div>
+        </section>
+      </main>
+    </div>
   );
 }
 
@@ -307,6 +233,10 @@ function App() {
         </ErrorBoundary>
       } />
       <Route path="/profile" element={<ProfileDashboard />} />
+      <Route path="/collections" element={<Collections />} />
+      <Route path="/analytics" element={<Analytics />} />
+      <Route path="/landing" element={<LandingPage />} />
+      <Route path="/settings" element={<SettingsPage />} />
     </Routes>
   );
 }
