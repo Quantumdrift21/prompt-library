@@ -1,7 +1,5 @@
 import { useState, useEffect } from 'react';
 import {
-    DashboardNav,
-    IconSidebar,
     OverviewCard,
     TodayActivityCard,
     OutputCard,
@@ -12,6 +10,7 @@ import {
     CollectionsCard,
     ProfilePictureUpload
 } from '../components/dashboard';
+import { DarkLayout } from '../components/layout';
 import {
     dashboardService,
     type OverviewStats,
@@ -83,82 +82,74 @@ export const ProfileDashboard = () => {
 
     if (isLoading) {
         return (
-            <div className="profile-dashboard">
-                <DashboardNav userName={userName} />
+            <DarkLayout title="Profile" userName={userName}>
                 <div className="profile-dashboard__loading">
                     <div className="profile-dashboard__spinner"></div>
                     <span>Loading dashboard...</span>
                 </div>
-            </div>
+            </DarkLayout>
         );
     }
 
     return (
-        <div className="profile-dashboard">
-            <DashboardNav userName={userName} />
+        <DarkLayout title="Profile Dashboard" userName={userName}>
+            <div className="profile-dashboard__content">
+                {/* Profile Header with Picture Upload */}
+                <div className="profile-dashboard__header">
+                    <ProfilePictureUpload userName={userName} />
+                    <div className="profile-dashboard__user-info">
+                        <h1 className="profile-dashboard__user-name">{userName}</h1>
+                        <p className="profile-dashboard__user-email">{user?.email || 'Guest User'}</p>
+                    </div>
+                </div>
 
-            <div className="profile-dashboard__layout">
-                <IconSidebar />
-
-                <main className="profile-dashboard__main">
-                    {/* Profile Header with Picture Upload */}
-                    <div className="profile-dashboard__header">
-                        <ProfilePictureUpload userName={userName} />
-                        <div className="profile-dashboard__user-info">
-                            <h1 className="profile-dashboard__user-name">{userName}</h1>
-                            <p className="profile-dashboard__user-email">{user?.email || 'Guest User'}</p>
-                            <span className="profile-dashboard__user-badge">Pro Member</span>
+                {/* Row 1: Overview Cards */}
+                <div className="profile-dashboard__row profile-dashboard__row--top">
+                    {overviewStats && (
+                        <div className="profile-dashboard__card profile-dashboard__card--overview">
+                            <OverviewCard stats={overviewStats} />
                         </div>
+                    )}
+
+                    {todayActivity && (
+                        <div className="profile-dashboard__card profile-dashboard__card--activity">
+                            <TodayActivityCard activity={todayActivity} />
+                        </div>
+                    )}
+
+                    {outputMetrics && (
+                        <div className="profile-dashboard__card profile-dashboard__card--output">
+                            <OutputCard metrics={outputMetrics} />
+                        </div>
+                    )}
+
+                    <div className="profile-dashboard__card profile-dashboard__card--gauge">
+                        <EngagementGauge score={engagementScore} />
+                    </div>
+                </div>
+
+                {/* Row 2: Recent Activity & Chart */}
+                <div className="profile-dashboard__row profile-dashboard__row--middle">
+                    <div className="profile-dashboard__card profile-dashboard__card--recent">
+                        <RecentPromptsCard activities={recentActivity} />
                     </div>
 
-                    {/* Row 1: Overview Cards */}
-                    <div className="profile-dashboard__row profile-dashboard__row--top">
-                        {overviewStats && (
-                            <div className="profile-dashboard__card profile-dashboard__card--overview">
-                                <OverviewCard stats={overviewStats} />
-                            </div>
-                        )}
+                    <div className="profile-dashboard__card profile-dashboard__card--chart">
+                        <UsageChart data={monthlyUsage} />
+                    </div>
+                </div>
 
-                        {todayActivity && (
-                            <div className="profile-dashboard__card profile-dashboard__card--activity">
-                                <TodayActivityCard activity={todayActivity} />
-                            </div>
-                        )}
-
-                        {outputMetrics && (
-                            <div className="profile-dashboard__card profile-dashboard__card--output">
-                                <OutputCard metrics={outputMetrics} />
-                            </div>
-                        )}
-
-                        <div className="profile-dashboard__card profile-dashboard__card--gauge">
-                            <EngagementGauge score={engagementScore} />
-                        </div>
+                {/* Row 3: Goals & Collections */}
+                <div className="profile-dashboard__row profile-dashboard__row--bottom">
+                    <div className="profile-dashboard__card profile-dashboard__card--goals">
+                        <GoalsCard goals={goals} />
                     </div>
 
-                    {/* Row 2: Recent Activity & Chart */}
-                    <div className="profile-dashboard__row profile-dashboard__row--middle">
-                        <div className="profile-dashboard__card profile-dashboard__card--recent">
-                            <RecentPromptsCard activities={recentActivity} />
-                        </div>
-
-                        <div className="profile-dashboard__card profile-dashboard__card--chart">
-                            <UsageChart data={monthlyUsage} />
-                        </div>
+                    <div className="profile-dashboard__card profile-dashboard__card--collections">
+                        <CollectionsCard collections={collections} />
                     </div>
-
-                    {/* Row 3: Goals & Collections */}
-                    <div className="profile-dashboard__row profile-dashboard__row--bottom">
-                        <div className="profile-dashboard__card profile-dashboard__card--goals">
-                            <GoalsCard goals={goals} />
-                        </div>
-
-                        <div className="profile-dashboard__card profile-dashboard__card--collections">
-                            <CollectionsCard collections={collections} />
-                        </div>
-                    </div>
-                </main>
+                </div>
             </div>
-        </div>
+        </DarkLayout>
     );
 };

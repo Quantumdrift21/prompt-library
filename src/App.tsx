@@ -3,7 +3,7 @@ import { Routes, Route } from 'react-router-dom';
 import type { Prompt, CreatePromptInput } from './types';
 import { PromptList, PromptEditor, EmptyState, ErrorBoundary } from './components';
 import { HeroSection } from './components/HeroSection';
-import { DashboardNav } from './components/dashboard';
+import { DarkLayout } from './components/layout';
 import { ProfileDashboard } from './pages/ProfileDashboard';
 import { Collections } from './pages/Collections';
 import { Analytics } from './pages/Analytics';
@@ -146,26 +146,23 @@ function PromptLibrary() {
 
   if (isLoading) {
     return (
-      <div className="app-container">
-        <DashboardNav userName={userName} />
+      <DarkLayout userName={userName}>
         <div className="prompt-library__loading">
           <div className="prompt-library__spinner"></div>
           <span>Loading prompts...</span>
         </div>
-      </div>
+      </DarkLayout>
     );
   }
 
   return (
-    <div className="app-container">
-      <DashboardNav userName={userName} />
-
+    <DarkLayout userName={userName}>
       <HeroSection
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
       />
 
-      <main className="main-content">
+      <div className="main-content">
         <section className="category-section">
           <h2 className="section-title">CATEGORY</h2>
 
@@ -219,8 +216,8 @@ function PromptLibrary() {
             </button>
           </div>
         </section>
-      </main>
-    </div>
+      </div>
+    </DarkLayout>
   );
 }
 

@@ -1,3 +1,4 @@
+import { Link, useNavigate } from 'react-router-dom';
 import './LandingPage.css';
 import { TerminalHero } from '../components/landing/TerminalHero';
 import { PromptDiscoveryGrid } from '../components/landing/PromptDiscoveryGrid';
@@ -14,19 +15,26 @@ import { PromptDiscoveryGrid } from '../components/landing/PromptDiscoveryGrid';
  * @returns The LandingPage JSX element.
  */
 export const LandingPage = () => {
+    const navigate = useNavigate();
+
+    const handleSignUp = () => {
+        // Navigate to main app (user will see login modal if not authenticated)
+        navigate('/');
+    };
+
     return (
         <div className="landing-page">
             {/* Navigation */}
             <nav className="landing-nav">
-                <div className="nav-logo">Prompt Library</div>
+                <Link to="/landing" className="nav-logo">Prompt Library</Link>
                 <div className="nav-links">
                     <a href="#discover">Discover</a>
                     <a href="#features">Features</a>
-                    <a href="#community">Community</a>
+                    <Link to="/collections">Collections</Link>
                 </div>
                 <div className="nav-actions">
-                    <a href="/login" className="nav-link-login">Log In</a>
-                    <button className="btn-signup">Sign Up Free</button>
+                    <Link to="/" className="nav-link-login">Log In</Link>
+                    <button className="btn-signup" onClick={handleSignUp}>Sign Up Free</button>
                 </div>
             </nav>
 
@@ -82,11 +90,13 @@ export const LandingPage = () => {
             {/* Footer CTA */}
             <footer className="landing-footer">
                 <p>Ready to build better prompts?</p>
-                <button className="btn-signup btn-signup--large">Get Started Free</button>
+                <button className="btn-signup btn-signup--large" onClick={handleSignUp}>Get Started Free</button>
                 <div className="footer-links">
-                    <a href="/privacy">Privacy Policy</a>
+                    <Link to="/settings">Settings</Link>
                     <span>|</span>
-                    <a href="/terms">Terms of Service</a>
+                    <Link to="/profile">Profile</Link>
+                    <span>|</span>
+                    <Link to="/analytics">Analytics</Link>
                 </div>
                 <p className="footer-copyright">© 2026 Prompt Library. Local-first AI Tools.</p>
             </footer>
