@@ -2,11 +2,107 @@
    Landing Page Styles
    ================================== */
 
+/* Smooth scrolling for the entire page */
+html {
+  scroll-behavior: smooth;
+}
+
+/* ==================================
+   Animation Keyframes
+   ================================== */
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes float {
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes pulse {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.7;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes gradientShift {
+
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+@keyframes glow {
+
+  0%,
+  100% {
+    box-shadow: 0 0 20px rgba(255, 107, 53, 0.3);
+  }
+
+  50% {
+    box-shadow: 0 0 40px rgba(255, 107, 53, 0.5);
+  }
+}
+
+/* ==================================
+   Base Styles
+   ================================== */
+
 .landing-page {
   min-height: 100vh;
-  background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
-  color: var(--text-primary);
-  font-family: 'Inter', system-ui, sans-serif;
+  background: linear-gradient(135deg, var(--color-bg-dark) 0%, var(--color-bg-darker) 100%);
+  color: var(--color-text-white);
+  font-family: var(--font-sans);
+  overflow-x: hidden;
 }
 
 /* Navigation Bar */
@@ -18,7 +114,7 @@
   position: sticky;
   top: 0;
   z-index: 100;
-  background: rgba(15, 15, 25, 0.7);
+  background: rgba(26, 26, 46, 0.85);
   backdrop-filter: blur(12px);
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
@@ -26,7 +122,7 @@
 .nav-logo {
   font-size: 1.5rem;
   font-weight: 700;
-  background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+  background: linear-gradient(90deg, var(--color-accent-orange), var(--color-accent-teal));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -38,14 +134,14 @@
 }
 
 .nav-links a {
-  color: var(--text-secondary);
+  color: var(--color-text-muted);
   text-decoration: none;
   font-weight: 500;
   transition: color 0.2s ease;
 }
 
 .nav-links a:hover {
-  color: var(--accent-primary);
+  color: var(--color-accent-orange);
 }
 
 .nav-actions {
@@ -55,18 +151,18 @@
 }
 
 .nav-link-login {
-  color: var(--text-secondary);
+  color: var(--color-text-muted);
   text-decoration: none;
   font-weight: 500;
 }
 
 .nav-link-login:hover {
-  color: var(--text-primary);
+  color: var(--color-text-white);
 }
 
 .btn-signup {
   padding: 0.6rem 1.25rem;
-  background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+  background: linear-gradient(135deg, var(--color-accent-orange), #ff8f5a);
   border: none;
   border-radius: 8px;
   color: white;
@@ -77,12 +173,30 @@
 
 .btn-signup:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(var(--accent-primary-rgb), 0.4);
+  box-shadow: 0 6px 20px rgba(255, 107, 53, 0.4);
 }
 
 .btn-signup--large {
   padding: 1rem 2rem;
   font-size: 1.1rem;
+  animation: glow 2s ease-in-out infinite;
+  position: relative;
+}
+
+.btn-signup--large::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, var(--color-accent-orange), var(--color-accent-teal));
+  opacity: 0;
+  z-index: -1;
+  transition: opacity 0.3s ease;
+}
+
+.btn-signup--large:hover::before {
+  opacity: 0.5;
+  filter: blur(15px);
 }
 
 /* Hero Section */
@@ -91,6 +205,7 @@
   padding: 6rem 2rem 4rem;
   max-width: 900px;
   margin: 0 auto;
+  animation: fadeInUp 0.8s ease-out;
 }
 
 .landing-hero h1 {
@@ -98,15 +213,17 @@
   font-weight: 800;
   line-height: 1.1;
   margin-bottom: 1.5rem;
-  background: linear-gradient(135deg, #fff 0%, var(--accent-primary) 50%, var(--accent-secondary) 100%);
+  background: linear-gradient(135deg, #fff 0%, var(--color-accent-orange) 50%, var(--color-accent-teal) 100%);
+  background-size: 200% 200%;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  animation: fadeInUp 0.8s ease-out, gradientShift 6s ease infinite;
 }
 
 .hero-subtitle {
   font-size: 1.25rem;
-  color: var(--text-secondary);
+  color: var(--color-text-muted);
   max-width: 700px;
   margin: 0 auto 3rem;
   line-height: 1.6;
@@ -133,20 +250,20 @@
 
 .carousel-card code {
   display: block;
-  font-family: 'Fira Code', monospace;
+  font-family: var(--font-mono);
   font-size: 0.9rem;
-  color: var(--accent-primary);
+  color: var(--color-accent-teal);
   margin-bottom: 1rem;
 }
 
 .card-badge {
   display: inline-block;
   padding: 0.25rem 0.75rem;
-  background: rgba(var(--accent-primary-rgb), 0.2);
+  background: rgba(0, 212, 255, 0.2);
   border-radius: 999px;
   font-size: 0.75rem;
   font-weight: 600;
-  color: var(--accent-primary);
+  color: var(--color-accent-teal);
 }
 
 /* Discovery Section */
@@ -161,7 +278,7 @@
   font-size: 1.75rem;
   font-weight: 700;
   margin-bottom: 2rem;
-  color: var(--text-primary);
+  color: var(--color-text-white);
 }
 
 .search-container {
@@ -176,19 +293,19 @@
   border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 12px;
   background: rgba(255, 255, 255, 0.05);
-  color: var(--text-primary);
+  color: var(--color-text-white);
   backdrop-filter: blur(8px);
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .search-input::placeholder {
-  color: var(--text-muted);
+  color: var(--color-text-muted);
 }
 
 .search-input:focus {
   outline: none;
-  border-color: var(--accent-primary);
-  box-shadow: 0 0 0 3px rgba(var(--accent-primary-rgb), 0.15);
+  border-color: var(--color-accent-orange);
+  box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.15);
 }
 
 .category-pills {
@@ -203,7 +320,7 @@
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 999px;
-  color: var(--text-secondary);
+  color: var(--color-text-muted);
   font-size: 0.875rem;
   font-weight: 500;
   cursor: pointer;
@@ -211,7 +328,7 @@
 }
 
 .category-pill:hover {
-  background: var(--accent-primary);
+  background: var(--color-accent-orange);
   color: white;
   transform: translateY(-2px);
 }
@@ -236,24 +353,46 @@
   border-radius: 16px;
   padding: 2rem;
   text-align: center;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+  animation: fadeInUp 0.6s ease-out backwards;
+}
+
+/* Staggered entrance animations */
+.feature-card:nth-child(1) {
+  animation-delay: 0.1s;
+}
+
+.feature-card:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.feature-card:nth-child(3) {
+  animation-delay: 0.3s;
 }
 
 .feature-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+  transform: translateY(-8px) scale(1.02);
+  box-shadow:
+    0 20px 40px rgba(0, 0, 0, 0.4),
+    0 0 30px rgba(255, 107, 53, 0.15);
+  border-color: rgba(255, 107, 53, 0.3);
 }
 
 .feature-card h3 {
   font-size: 1.25rem;
   font-weight: 700;
   margin-bottom: 0.75rem;
-  color: var(--accent-primary);
+  color: var(--color-accent-orange);
+  transition: transform 0.3s ease;
+}
+
+.feature-card:hover h3 {
+  transform: scale(1.05);
 }
 
 .feature-card p {
   font-size: 0.95rem;
-  color: var(--text-secondary);
+  color: var(--color-text-muted);
   line-height: 1.6;
 }
 
@@ -264,7 +403,7 @@
   border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-.landing-footer > p:first-child {
+.landing-footer>p:first-child {
   font-size: 1.5rem;
   font-weight: 600;
   margin-bottom: 1.5rem;
@@ -275,23 +414,23 @@
   display: flex;
   justify-content: center;
   gap: 1rem;
-  color: var(--text-muted);
+  color: var(--color-text-muted);
 }
 
 .footer-links a {
-  color: var(--text-secondary);
+  color: var(--color-text-muted);
   text-decoration: none;
   font-size: 0.875rem;
 }
 
 .footer-links a:hover {
-  color: var(--accent-primary);
+  color: var(--color-accent-orange);
 }
 
 .footer-copyright {
   margin-top: 1.5rem;
   font-size: 0.8rem;
-  color: var(--text-muted);
+  color: var(--color-text-muted);
 }
 
 /* Responsive */

@@ -2,6 +2,19 @@
    Prompt Discovery Grid Styles
    ================================== */
 
+/* Keyframes for staggered entrance */
+@keyframes cardFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.98);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
 .discovery-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
@@ -20,13 +33,64 @@
     display: flex;
     flex-direction: column;
     gap: 1rem;
-    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+        box-shadow 0.3s ease,
+        border-color 0.3s ease;
+    animation: cardFadeIn 0.5s ease-out backwards;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Staggered entrance for each card */
+.prompt-card-detail:nth-child(1) {
+    animation-delay: 0.05s;
+}
+
+.prompt-card-detail:nth-child(2) {
+    animation-delay: 0.1s;
+}
+
+.prompt-card-detail:nth-child(3) {
+    animation-delay: 0.15s;
+}
+
+.prompt-card-detail:nth-child(4) {
+    animation-delay: 0.2s;
+}
+
+.prompt-card-detail:nth-child(5) {
+    animation-delay: 0.25s;
+}
+
+.prompt-card-detail:nth-child(6) {
+    animation-delay: 0.3s;
+}
+
+/* Shimmer effect on hover */
+.prompt-card-detail::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg,
+            transparent,
+            rgba(255, 255, 255, 0.03),
+            transparent);
+    transition: left 0.5s ease;
+}
+
+.prompt-card-detail:hover::before {
+    left: 100%;
 }
 
 .prompt-card-detail:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
-    border-color: rgba(255, 107, 53, 0.3);
+    transform: translateY(-8px) scale(1.02);
+    box-shadow:
+        0 20px 40px rgba(0, 0, 0, 0.5),
+        0 0 40px rgba(255, 107, 53, 0.1);
+    border-color: rgba(255, 107, 53, 0.4);
 }
 
 /* Card Header */
