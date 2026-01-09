@@ -1,4 +1,6 @@
 import './LandingPage.css';
+import { TerminalHero } from '../components/landing/TerminalHero';
+import { PromptDiscoveryGrid } from '../components/landing/PromptDiscoveryGrid';
 
 /**
  * LandingPage component - the primary public-facing page for unauthenticated users.
@@ -34,13 +36,8 @@ export const LandingPage = () => {
                 <p className="hero-subtitle">
                     The definitive collection of optimized system prompts, chain-of-thought templates, and few-shot examples for GPT-4, Claude 3, and Llama.
                 </p>
-                {/* Trending Carousel Placeholder */}
-                <div className="hero-carousel" aria-label="Trending Prompts">
-                    <div className="carousel-card">
-                        <code>Refactor this React component to use Hooks...</code>
-                        <span className="card-badge">GPT-4</span>
-                    </div>
-                </div>
+                {/* Terminal with Typewriter Animation */}
+                <TerminalHero />
             </header>
 
             {/* Discovery Section */}
@@ -59,6 +56,8 @@ export const LandingPage = () => {
                     <button className="category-pill">Business & Marketing</button>
                     <button className="category-pill">Academic Research</button>
                 </div>
+                {/* Prompt Cards Grid */}
+                <PromptDiscoveryGrid />
             </section>
 
             {/* Features Section */}

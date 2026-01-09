@@ -1,0 +1,213 @@
+/* ==================================
+   Terminal Hero Styles
+   ================================== */
+
+.terminal-hero {
+    display: flex;
+    justify-content: center;
+    padding: 2rem 1rem;
+}
+
+.terminal-window {
+    width: 100%;
+    max-width: 700px;
+    background: rgba(20, 20, 34, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow:
+        0 25px 50px -12px rgba(0, 0, 0, 0.5),
+        0 0 0 1px rgba(255, 255, 255, 0.05);
+}
+
+/* Terminal Header */
+.terminal-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    background: rgba(30, 30, 50, 0.8);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.terminal-buttons {
+    display: flex;
+    gap: 6px;
+}
+
+.terminal-btn {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+}
+
+.terminal-btn--close {
+    background: #ff5f56;
+}
+
+.terminal-btn--minimize {
+    background: #ffbd2e;
+}
+
+.terminal-btn--maximize {
+    background: #27ca40;
+}
+
+.terminal-title {
+    flex: 1;
+    text-align: center;
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    font-family: var(--font-mono);
+}
+
+/* Terminal Body */
+.terminal-body {
+    padding: 1.5rem;
+    min-height: 180px;
+}
+
+.terminal-input {
+    display: flex;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+}
+
+.terminal-prompt {
+    color: var(--color-accent-green);
+    font-weight: 600;
+}
+
+.terminal-command {
+    color: var(--color-text-light);
+    opacity: 0.9;
+}
+
+.terminal-output {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    line-height: 1.6;
+}
+
+.terminal-output pre {
+    margin: 0;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+.terminal-output code {
+    color: var(--color-accent-teal);
+}
+
+.terminal-cursor {
+    display: inline-block;
+    color: var(--color-accent-orange);
+    animation: blink 1s step-end infinite;
+    margin-left: 2px;
+}
+
+@keyframes blink {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0;
+    }
+}
+
+/* Terminal Footer */
+.terminal-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 1rem;
+    background: rgba(30, 30, 50, 0.6);
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.terminal-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.6rem;
+    border-radius: 999px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.terminal-badge--model {
+    background: rgba(0, 212, 255, 0.2);
+    color: var(--color-accent-teal);
+}
+
+.terminal-badge--category {
+    background: rgba(255, 107, 53, 0.2);
+    color: var(--color-accent-orange);
+}
+
+/* Navigation */
+.terminal-nav {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.terminal-nav button {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: var(--color-text-muted);
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 0.9rem;
+}
+
+.terminal-nav button:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: var(--color-accent-orange);
+    color: var(--color-text-white);
+}
+
+.terminal-nav-dots {
+    display: flex;
+    gap: 6px;
+}
+
+.terminal-nav-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.terminal-nav-dot:hover {
+    background: rgba(255, 255, 255, 0.4);
+}
+
+.terminal-nav-dot.active {
+    background: var(--color-accent-orange);
+    transform: scale(1.2);
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    .terminal-body {
+        padding: 1rem;
+        min-height: 150px;
+    }
+
+    .terminal-input,
+    .terminal-output {
+        font-size: 0.75rem;
+    }
+}
