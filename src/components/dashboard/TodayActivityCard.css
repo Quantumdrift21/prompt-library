@@ -1,47 +1,52 @@
 /* ========================================
-   Today Activity - Glass Cards
+   Today Activity - Single Card Style
    ======================================== */
 
 .today-activity-card {
     height: 100%;
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    padding: 24px;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--glass-shadow);
+    backdrop-filter: var(--glass-blur);
+}
+
+.today-activity-card__header {
+    margin-bottom: 24px;
 }
 
 .today-activity-card__title {
     font-size: 1rem;
     font-weight: 600;
     color: var(--color-text);
-    margin-bottom: 4px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+    margin: 0;
 }
 
-.today-activity-card__date {
-    font-size: 0.75rem;
-    font-weight: 400;
-    color: var(--color-text-muted);
+.today-activity-card__items {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    flex: 1;
 }
 
 .today-activity-card__item {
     display: flex;
     align-items: center;
     gap: 16px;
-    padding: 20px;
-    background: var(--color-surface);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-lg);
-    backdrop-filter: var(--glass-blur);
-    box-shadow: var(--glass-shadow);
+    padding: 16px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid transparent;
+    border-radius: var(--radius-md);
     transition: all 0.2s ease;
-    flex: 1;
+    width: 100%;
 }
 
 .today-activity-card__item:hover {
     background: rgba(255, 255, 255, 0.05);
-    border-color: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.1);
     transform: translateY(-2px);
 }
 
@@ -49,11 +54,12 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 48px;
-    height: 48px;
+    width: 44px;
+    height: 44px;
     border-radius: 12px;
     background: rgba(139, 92, 246, 0.1);
     color: var(--accent-primary);
+    flex-shrink: 0;
 }
 
 .today-activity-card__item:nth-child(2) .today-activity-card__icon-box {
@@ -67,23 +73,31 @@
 }
 
 .today-activity-card__icon {
-    width: 24px;
-    height: 24px;
+    width: 20px;
+    height: 20px;
 }
 
 .today-activity-card__info {
     flex: 1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    min-width: 0;
 }
 
 .today-activity-card__label {
-    font-size: 0.85rem;
+    font-size: 0.9rem;
     color: var(--color-text-muted);
-    margin-bottom: 4px;
+    font-weight: 500;
 }
 
-.today-activity-card__value {
+.today-activity-card__count {
     font-size: 1.25rem;
     font-weight: 700;
     color: var(--color-text);
-    line-height: 1;
+    /* Gradient text for premium feel */
+    background: linear-gradient(135deg, var(--color-text) 0%, var(--color-text-muted) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-family: var(--font-sans);
 }

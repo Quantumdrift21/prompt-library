@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { DarkLayout } from '../components/layout';
+import { Link } from 'react-router-dom';
 import { useAuth } from '../hooks';
 import AccountSection from '../components/settings/AccountSection';
 import PreferencesSection from '../components/settings/PreferencesSection';
@@ -66,6 +66,12 @@ const ToolIcon = () => (
     </svg>
 );
 
+const ArrowLeftIcon = () => (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="16" height="16">
+        <path d="M19 12H5M12 19l-7-7 7-7" />
+    </svg>
+);
+
 const categories: CategoryConfig[] = [
     { id: 'Account', label: 'Account', sublabel: 'Profile & Email', icon: <UserIcon /> },
     { id: 'Preferences', label: 'Preferences', sublabel: 'Theme & Sync', icon: <SlidersIcon /> },
@@ -75,7 +81,9 @@ const categories: CategoryConfig[] = [
     { id: 'Advanced', label: 'Advanced', sublabel: 'Maintenance & Data', icon: <ToolIcon /> },
 ];
 
-// Advanced section includes Maintenance
+/**
+ * Advanced section includes Maintenance tools.
+ */
 const AdvancedSection = () => (
     <div>
         <p className="settings-hint" style={{ marginBottom: '24px' }}>
@@ -85,10 +93,22 @@ const AdvancedSection = () => (
     </div>
 );
 
+/**
+ * SettingsPage component - user settings with dark glassmorphism theme.
+ * 
+ * Features:
+ * - Account management
+ * - Preferences
+ * - Privacy settings
+ * - Security options
+ * - Notifications
+ * - Advanced/Maintenance tools
+ * 
+ * @returns The SettingsPage JSX element.
+ */
 export default function SettingsPage() {
-    const { user } = useAuth();
+    const { user: _user } = useAuth();
     const [activeCategory, setActiveCategory] = useState<SettingsCategory>('Account');
-    const userName = user?.email?.split('@')[0] || 'Guest';
 
     const renderContent = () => {
         switch (activeCategory) {
@@ -103,8 +123,19 @@ export default function SettingsPage() {
     };
 
     return (
-        <DarkLayout title="Settings" userName={userName}>
+        <div className="settings-page">
+            {/* Navigation Bar */}
+            <nav className="settings-nav-bar">
+                <Link to="/home" className="settings-nav-bar__logo">Prompt Library</Link>
+                <Link to="/home" className="settings-nav-bar__back">
+                    <ArrowLeftIcon />
+                    Back to Dashboard
+                </Link>
+            </nav>
+
             <div className="settings-container">
+                <h1 className="settings-title">Settings</h1>
+
                 <div className="settings-grid">
                     <aside className="settings-sidebar">
                         <nav className="settings-nav">
@@ -132,6 +163,6 @@ export default function SettingsPage() {
                     </section>
                 </div>
             </div>
-        </DarkLayout>
+        </div>
     );
 }

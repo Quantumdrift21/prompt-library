@@ -24,7 +24,8 @@ const createDefaultPrompt = (title: string, content: string, tags: string[]): Pr
         favorite: false,
         created_at: now,
         updated_at: now,
-        user_id: 'guest' // Will be overwritten
+        user_id: 'guest', // Will be overwritten
+        deleted_at: null
     };
 };
 

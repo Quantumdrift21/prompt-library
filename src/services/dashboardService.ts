@@ -1,4 +1,3 @@
-import type { Prompt } from '../types';
 import { indexedDbService } from './indexedDb';
 
 export interface OverviewStats {
@@ -57,16 +56,16 @@ class DashboardService {
         const totalPrompts = prompts.length;
         const favoriteCount = prompts.filter(p => p.favorite).length;
 
-        // Mock growth calculation (would compare to previous period in real app)
-        const growthPercentage = totalPrompts > 0 ? Math.min(23 + Math.floor(Math.random() * 10), 50) : 0;
+        // Mock growth calculation (deterministic based on count)
+        const growthPercentage = totalPrompts > 0 ? 15 : 0;
 
         return {
             totalPrompts,
             activePrompts: totalPrompts,
-            archivedPrompts: 0, // No archive feature yet
+            archivedPrompts: 0,
             growthPercentage,
             created: totalPrompts,
-            used: Math.floor(totalPrompts * 0.7), // Estimate 70% usage
+            used: totalPrompts, // Assume all are used at least once
             favorite: favoriteCount
         };
     }
@@ -83,8 +82,8 @@ class DashboardService {
             p.updated_at.startsWith(today) && !p.created_at.startsWith(today)
         ).length;
 
-        // Mock copied count (would track from usage logs in real app)
-        const copiedToday = Math.max(Math.floor(prompts.length * 0.3), createdToday);
+        // Mock copied count (deterministic)
+        const copiedToday = Math.max(0, createdToday);
 
         return {
             promptsCopied: copiedToday,
@@ -124,14 +123,14 @@ class DashboardService {
         // Sort by updated_at and take last 10
         const sorted = [...prompts]
             .sort((a, b) => new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime())
-            .slice(0, 10);
+            .slice(0, 3);
 
         return sorted.map(p => ({
             id: p.id,
             title: p.title,
             author: 'You',
             lastUsed: this.formatRelativeTime(p.updated_at),
-            usageCount: Math.floor(Math.random() * 20) + 1 // Mock usage count
+            usageCount: 1 // Default to 1 if not tracked
         }));
     }
 
@@ -154,10 +153,10 @@ class DashboardService {
                 return created >= monthStart && created <= monthEnd;
             }).length;
 
-            // Add some variance for demo
+            // Deterministic usage count
             result.push({
                 month: monthStr,
-                count: count + Math.floor(Math.random() * 5)
+                count: count
             });
         }
 

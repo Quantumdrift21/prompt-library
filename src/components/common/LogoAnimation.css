@@ -1,0 +1,213 @@
+/* ==================================
+   Logo Animation Styles
+   ================================== */
+
+/* 3D Book Page Flip Animation */
+@keyframes pageFlip3D {
+    0% {
+        opacity: 0;
+        transform: perspective(600px) rotateY(-90deg) translateZ(20px);
+    }
+
+    50% {
+        opacity: 1;
+        transform: perspective(600px) rotateY(-15deg) translateZ(10px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: perspective(600px) rotateY(0deg) translateZ(0);
+    }
+}
+
+/* Icon entrance animation - NO GLOW */
+@keyframes iconFlipIn {
+    0% {
+        opacity: 0;
+        transform: perspective(800px) rotateY(-180deg) scale(0.5);
+    }
+
+    60% {
+        opacity: 1;
+        transform: perspective(800px) rotateY(15deg) scale(1.1);
+    }
+
+    100% {
+        opacity: 1;
+        transform: perspective(800px) rotateY(0deg) scale(1);
+    }
+}
+
+@keyframes iconFloat {
+
+    0%,
+    100% {
+        transform: translateY(0) rotate(0deg);
+    }
+
+    50% {
+        transform: translateY(-4px) rotate(2deg);
+    }
+}
+
+/* Color animation to simulate gradient across letters */
+@keyframes colorShift {
+
+    0%,
+    100% {
+        color: var(--color-accent-orange, #ff6b35);
+    }
+
+    50% {
+        color: var(--color-accent-teal, #4ecdc4);
+    }
+}
+
+.logo-animation {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 1.5rem;
+    font-family: var(--font-sans), -apple-system, sans-serif;
+    font-weight: 800;
+    letter-spacing: 0.02em;
+    /* Move to the left */
+    margin-right: auto;
+    margin-left: 0;
+    /* Enable 3D transforms */
+    perspective: 1000px;
+    transform-style: preserve-3d;
+}
+
+.logo-animation__icon {
+    width: 5.5rem;
+    height: 5.5rem;
+    opacity: 0;
+    flex-shrink: 0;
+}
+
+.logo-animation--visible .logo-animation__icon {
+    animation: iconFlipIn 1s cubic-bezier(0.16, 1, 0.3, 1) forwards,
+        iconFloat 3s ease-in-out 1s infinite;
+}
+
+/* NO filter/glow on the icon SVG to avoid border exposure */
+.logo-animation__icon svg {
+    width: 100%;
+    height: 100%;
+}
+
+.logo-animation__content {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.2rem;
+    transform-style: preserve-3d;
+}
+
+/* Size variants - BIGGER */
+.logo-animation--small {
+    font-size: 2rem;
+}
+
+.logo-animation--small .logo-animation__icon {
+    width: 3rem;
+    height: 3rem;
+}
+
+.logo-animation--medium {
+    font-size: 3.5rem;
+}
+
+.logo-animation--medium .logo-animation__icon {
+    width: 4.5rem;
+    height: 4.5rem;
+}
+
+.logo-animation--large {
+    font-size: 5rem;
+}
+
+.logo-animation--large .logo-animation__icon {
+    width: 6rem;
+    height: 6rem;
+}
+
+.logo-animation__text {
+    display: flex;
+    transform-style: preserve-3d;
+}
+
+/* Gradient text - apply per-character for proper rendering */
+.logo-animation__text--prompt {
+    display: flex;
+    font-weight: 800;
+}
+
+/* Each character gets a gradient position based on its index (set via inline style) */
+.logo-animation__text--prompt .logo-animation__char {
+    /* Gradient from orange to teal - matching "Master the Art of Context" */
+    background: linear-gradient(90deg, var(--color-accent-orange, #ff6b35), var(--color-accent-teal, #4ecdc4));
+    background-size: 600% 100%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* Position gradient for each letter position */
+.logo-animation__text--prompt .logo-animation__char:nth-child(1) {
+    background-position: 0% 50%;
+}
+
+.logo-animation__text--prompt .logo-animation__char:nth-child(2) {
+    background-position: 20% 50%;
+}
+
+.logo-animation__text--prompt .logo-animation__char:nth-child(3) {
+    background-position: 40% 50%;
+}
+
+.logo-animation__text--prompt .logo-animation__char:nth-child(4) {
+    background-position: 60% 50%;
+}
+
+.logo-animation__text--prompt .logo-animation__char:nth-child(5) {
+    background-position: 80% 50%;
+}
+
+.logo-animation__text--prompt .logo-animation__char:nth-child(6) {
+    background-position: 100% 50%;
+}
+
+.logo-animation__text--library {
+    font-size: 0.45em;
+    letter-spacing: 0.4em;
+    color: var(--color-text-muted, #8898aa);
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.logo-animation__char {
+    display: inline-block;
+    opacity: 0;
+    transform-style: preserve-3d;
+    backface-visibility: visible;
+}
+
+/* 3D Book Page Flip for each character */
+.logo-animation--visible .logo-animation__char {
+    animation: pageFlip3D 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .logo-animation--large {
+        font-size: 3rem;
+        gap: 1rem;
+    }
+
+    .logo-animation--large .logo-animation__icon {
+        width: 4rem;
+        height: 4rem;
+    }
+}

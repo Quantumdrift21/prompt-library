@@ -1,19 +1,22 @@
 /* ========================================
-   Filter Bar - Premium Glass Control
+   Filter Bar - Premium Glass Styling
+   Matches PromptCard.css variables & stacking
    ======================================== */
 
 .filter-bar {
     display: flex;
     flex-direction: column;
-    gap: 16px;
-    margin-bottom: 32px;
-    padding: 20px;
-    background: linear-gradient(145deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    /* Very subtle border */
+    gap: 12px;
+    margin-bottom: 24px;
+    padding: 16px 20px;
+    background: var(--glass-bg, rgba(255, 255, 255, 0.02));
+    border: 1px solid var(--color-border);
     border-radius: var(--radius-lg);
     backdrop-filter: var(--glass-blur);
     box-shadow: var(--glass-shadow);
+    /* Ensure dropdowns appear on top of PromptCards (which have transforms) */
+    position: relative;
+    z-index: 50;
 }
 
 .filter-bar__row {
@@ -21,104 +24,435 @@
     justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;
-    gap: 20px;
+    gap: 16px;
 }
 
-.filter-bar__group {
+.filter-bar__controls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+/* ========================================
+   Dropdown Component
+   ======================================== */
+
+.filter-bar__dropdown {
+    position: relative;
+    /* Stack context for dropdown menu */
+}
+
+.filter-bar__dropdown-trigger {
     display: flex;
     align-items: center;
     gap: 8px;
-}
-
-.filter-bar__label {
-    font-size: 13px;
-    color: var(--color-text-muted);
-    font-weight: 500;
-    margin-right: 4px;
-}
-
-/* Sort Chips */
-.filter-bar__chip {
-    padding: 6px 16px;
+    padding: 8px 14px;
     border-radius: var(--radius-full);
-    font-size: 13px;
+    font-size: 0.85rem;
     font-weight: 500;
+    font-family: var(--font-sans);
     background: rgba(255, 255, 255, 0.03);
     color: var(--color-text-muted);
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.08);
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.2s var(--ease-spring, ease);
+    white-space: nowrap;
 }
 
-.filter-bar__chip:hover {
+.filter-bar__dropdown-trigger:hover {
     background: rgba(255, 255, 255, 0.08);
-    color: #fff;
-    border-color: rgba(255, 255, 255, 0.1);
+    color: var(--color-text);
+    border-color: rgba(255, 255, 255, 0.15);
 }
 
-.filter-bar__chip.active {
-    background: rgba(139, 92, 246, 0.15);
-    /* Electric Violet Tint */
-    color: #c4b5fd;
+.filter-bar__dropdown-trigger.open {
+    background: rgba(139, 92, 246, 0.12);
+    color: var(--accent-secondary, #c4b5fd);
     border-color: rgba(139, 92, 246, 0.3);
-    box-shadow: 0 0 10px rgba(139, 92, 246, 0.1);
+    box-shadow: 0 0 12px rgba(139, 92, 246, 0.15);
 }
+
+.filter-bar__dropdown-trigger.has-selection {
+    background: rgba(139, 92, 246, 0.1);
+    color: var(--accent-secondary, #c4b5fd);
+    border-color: rgba(139, 92, 246, 0.25);
+}
+
+.filter-bar__dropdown-icon {
+    font-size: 14px;
+    opacity: 0.8;
+}
+
+.filter-bar__dropdown-chevron {
+    font-size: 8px;
+    opacity: 0.6;
+    margin-left: 2px;
+}
+
+/* Badge for selected count */
+.filter-bar__badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+    margin-left: 6px;
+    font-size: 10px;
+    font-weight: 600;
+    background: var(--accent-gradient);
+    color: white;
+    border-radius: var(--radius-full);
+}
+
+/* ========================================
+   Dropdown Menu
+   ======================================== */
+
+.filter-bar__dropdown-menu {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    min-width: 180px;
+    /* Ensure high contrast and legibility over glass cards */
+    background: var(--color-surface);
+    /* Fallback was hardcoded dark, now matches theme */
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    box-shadow:
+        var(--glass-shadow),
+        0 20px 40px rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(24px);
+    z-index: 1000;
+    overflow: hidden;
+    animation: dropdownFadeIn 0.2s var(--ease-spring, ease-out);
+}
+
+@keyframes dropdownFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Light Theme Overrides */
+.light-theme .filter-bar__dropdown-menu {
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.light-theme .filter-bar__dropdown-item:hover {
+    background: rgba(0, 0, 0, 0.04);
+}
+
+.light-theme .filter-bar__dropdown-item {
+    color: #475569;
+}
+
+.light-theme .filter-bar__dropdown-item.active {
+    background: rgba(139, 92, 246, 0.1);
+    color: var(--accent-primary);
+}
+
+.filter-bar__dropdown-menu--tags {
+    min-width: 240px;
+    max-width: 300px;
+}
+
+.filter-bar__dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    padding: 10px 14px;
+    font-family: var(--font-sans);
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--color-text-muted);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.15s ease;
+}
+
+.filter-bar__dropdown-item:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--color-text);
+}
+
+.filter-bar__dropdown-item.active {
+    background: rgba(139, 92, 246, 0.12);
+    color: var(--accent-secondary, #c4b5fd);
+}
+
+.filter-bar__check {
+    color: var(--accent-primary);
+    font-size: 12px;
+    font-weight: 700;
+}
+
+/* ========================================
+   Tag Dropdown Specifics
+   ======================================== */
+
+.filter-bar__search-wrapper {
+    padding: 10px 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.filter-bar__search {
+    width: 100%;
+    padding: 8px 12px;
+    font-family: var(--font-sans);
+    font-size: 0.85rem;
+    color: var(--color-text);
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-sm);
+    outline: none;
+    transition: all 0.2s;
+}
+
+.filter-bar__search::placeholder {
+    color: var(--color-text-muted);
+    opacity: 0.6;
+}
+
+.filter-bar__search:focus {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(139, 92, 246, 0.4);
+    box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.15);
+}
+
+.filter-bar__tag-list {
+    max-height: 240px;
+    overflow-y: auto;
+    padding: 6px 0;
+}
+
+.filter-bar__tag-list::-webkit-scrollbar {
+    width: 5px;
+}
+
+.filter-bar__tag-list::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.filter-bar__tag-list::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+}
+
+.filter-bar__checkbox {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 16px;
+    height: 16px;
+    font-size: 10px;
+    font-weight: 700;
+    color: white;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 4px;
+    transition: all 0.15s;
+}
+
+.filter-bar__checkbox.checked {
+    background: var(--accent-gradient);
+    border-color: transparent;
+}
+
+.filter-bar__empty {
+    padding: 16px;
+    text-align: center;
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    opacity: 0.7;
+}
+
+.filter-bar__tag-actions {
+    padding: 8px 12px;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    display: flex;
+    justify-content: flex-end;
+}
+
+.filter-bar__tag-clear {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: var(--radius-sm);
+    transition: all 0.15s;
+}
+
+.filter-bar__tag-clear:hover {
+    color: var(--color-danger, #f87171);
+    background: rgba(248, 113, 113, 0.1);
+}
+
+/* ========================================
+   Meta Section (Right Side)
+   ======================================== */
 
 .filter-bar__meta {
     display: flex;
     align-items: center;
-    gap: 16px;
-    font-size: 13px;
+    gap: 12px;
+    font-size: 0.85rem;
     color: var(--color-text-muted);
+    font-family: var(--font-sans);
+}
+
+.filter-bar__count {
+    opacity: 0.8;
 }
 
 .filter-bar__clear {
+    display: flex;
+    align-items: center;
+    gap: 4px;
     color: var(--color-text-muted);
     cursor: pointer;
-    background: none;
-    border: none;
-    padding: 0;
-    font-size: 13px;
-    transition: color 0.2s;
-    border-bottom: 1px dashed rgba(255, 255, 255, 0.2);
+    background: rgba(248, 113, 113, 0.08);
+    border: 1px solid rgba(248, 113, 113, 0.15);
+    padding: 6px 12px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    font-family: var(--font-sans);
+    border-radius: var(--radius-full);
+    transition: all 0.2s;
 }
 
 .filter-bar__clear:hover {
-    color: var(--color-danger);
-    border-color: var(--color-danger);
+    color: #fca5a5;
+    background: rgba(248, 113, 113, 0.15);
+    border-color: rgba(248, 113, 113, 0.3);
 }
 
-/* Tag Cloud Area */
-.filter-bar__tags {
+/* ========================================
+   Selected Tags Preview (Quick Access)
+   ======================================== */
+
+.filter-bar__selected-tags {
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
-    padding-top: 16px;
+    padding-top: 12px;
     border-top: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-.filter-bar__tag {
-    font-size: 12px;
-    padding: 6px 12px;
-    border-radius: var(--radius-sm);
-    background: rgba(255, 255, 255, 0.03);
-    color: var(--color-text-muted);
-    border: 1px solid rgba(255, 255, 255, 0.05);
+.filter-bar__selected-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    font-family: var(--font-sans);
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--accent-secondary, #c4b5fd);
+    background: rgba(139, 92, 246, 0.12);
+    border: 1px solid rgba(139, 92, 246, 0.25);
+    border-radius: var(--radius-full);
     cursor: pointer;
     transition: all 0.2s;
 }
 
-.filter-bar__tag:hover {
-    background: rgba(255, 255, 255, 0.08);
-    border-color: rgba(255, 255, 255, 0.15);
-    color: #fff;
-    transform: translateY(-1px);
+.filter-bar__selected-tag:hover {
+    background: rgba(139, 92, 246, 0.2);
+    border-color: rgba(139, 92, 246, 0.4);
 }
 
-.filter-bar__tag.active {
-    background: var(--accent-gradient);
-    color: white;
-    border-color: transparent;
-    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
-    font-weight: 600;
+.filter-bar__remove {
+    font-size: 10px;
+    opacity: 0.7;
+    transition: opacity 0.15s;
+}
+
+.filter-bar__selected-tag:hover .filter-bar__remove {
+    opacity: 1;
+}
+
+/* ========================================
+   Responsive Design
+   ======================================== */
+
+@media (max-width: 768px) {
+    .filter-bar {
+        padding: 12px 16px;
+    }
+
+    .filter-bar__row {
+        gap: 12px;
+    }
+
+    .filter-bar__controls {
+        gap: 8px;
+    }
+
+    .filter-bar__dropdown-trigger {
+        padding: 6px 10px;
+        font-size: 0.8rem;
+    }
+
+    .filter-bar__meta {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .filter-bar__dropdown-menu {
+        position: fixed;
+        top: auto;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+        max-height: 60vh;
+        width: 100%;
+        min-width: 0;
+        /* Mobile drawer specific bg adjustments */
+        background: rgba(20, 20, 30, 0.98);
+        border: none;
+        border-top: 1px solid var(--color-border);
+    }
+
+    .filter-bar__dropdown-menu--tags .filter-bar__tag-list {
+        max-height: 40vh;
+    }
+}
+
+/* ========================================
+   Accessibility
+   ======================================== */
+
+.filter-bar__dropdown-trigger:focus-visible,
+.filter-bar__dropdown-item:focus-visible,
+.filter-bar__search:focus-visible,
+.filter-bar__selected-tag:focus-visible {
+    outline: 2px solid var(--accent-primary);
+    outline-offset: 2px;
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+    .filter-bar__dropdown-menu {
+        animation: none;
+    }
+
+    .filter-bar__dropdown-trigger,
+    .filter-bar__dropdown-item,
+    .filter-bar__selected-tag {
+        transition: none;
+    }
 }

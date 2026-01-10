@@ -53,6 +53,10 @@ export const UserMenu = ({ user, onLogout, onProfile, onSettings }: UserMenuProp
         return name.slice(0, 2).toUpperCase();
     };
 
+    const getAvatarUrl = () => {
+        return user.user_metadata?.avatar_url || null;
+    };
+
     return (
         <div className="user-menu" ref={menuRef}>
             <button
@@ -61,7 +65,13 @@ export const UserMenu = ({ user, onLogout, onProfile, onSettings }: UserMenuProp
                 aria-expanded={isOpen}
                 aria-haspopup="true"
             >
-                <div className="user-menu__avatar">{getInitials()}</div>
+                <div className="user-menu__avatar">
+                    {getAvatarUrl() ? (
+                        <img src={getAvatarUrl()!} alt={getDisplayName()} style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }} />
+                    ) : (
+                        getInitials()
+                    )}
+                </div>
                 <span className="user-menu__name">{getDisplayName()}</span>
                 <span className="user-menu__chevron">▼</span>
             </button>

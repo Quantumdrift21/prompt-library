@@ -82,12 +82,95 @@ class AuthService {
         return { error };
     }
 
+    async signInWithGoogle(): Promise<{ error: AuthError | null }> {
+        if (!supabase) return { error: { message: 'Supabase not configured' } as AuthError };
+
+        const { error } = await supabase.auth.signInWithOAuth({
+            provider: 'google',
+            options: {
+                redirectTo: window.location.origin
+            }
+        });
+        return { error };
+    }
+
     isAuthenticated(): boolean {
         return !!this.currentState.user;
     }
 
     getUserId(): string | null {
         return this.currentState.user?.id || null;
+    }
+    async updateProfile(updates: { display_name?: string; bio?: string; full_name?: string; avatar_url?: string }): Promise<{ error: AuthError | null }> {
+        if (!supabase) return { error: { message: 'Supabase not configured' } as AuthError };
+
+        // Update auth metadata
+        const { error } = await supabase.auth.updateUser({
+            data: updates
+        });
+
+        // In a real app with a profiles table, we might also update that here:
+        // await supabase.from('profiles').update(updates).eq('id', this.currentState.user?.id);
+
+        return { error };
+    }
+
+    async updateEmail(email: string): Promise<{ error: AuthError | null }> {
+        if (!supabase) return { error: { message: 'Supabase not configured' } as AuthError };
+
+        const { error } = await supabase.auth.updateUser({ email });
+        return { error };
+    }
+
+    async deleteAccount(): Promise<{ error: Error | null }> {
+        if (!supabase) return { error: null };
+
+        // Note: Client-side deletion often requires specific RLS or RPC setup.
+        // Assuming a Supabase RPC function 'delete_user' exists or handling via edge case.
+        // For standard setup, users often can't delete themselves without server-side code.
+        // We will try a standard RPC call if it existed, otherwise return an error for now
+        // to prompt "Contact Support" behavior or similar.
+
+        try {
+            // Placeholder: Most setups don't allow straight client-side deletion for security.
+            // We would call: await supabase.rpc('delete_own_account');
+            return { error: new Error("Self-deletion requires server configuration.") };
+        } catch (e) {
+            return { error: e as Error };
+        }
+    }
+
+    /**
+     * Checks if the current user has completed the onboarding flow.
+     * 
+     * @returns True if onboarding is complete, false otherwise.
+     */
+    hasCompletedOnboarding(): boolean {
+        const user = this.currentState.user;
+        return user?.user_metadata?.onboarding_completed === true;
+    }
+
+    /**
+     * Marks the onboarding as complete and saves user preferences.
+     * 
+     * @param preferences - User preferences collected during onboarding.
+     * @returns Object with potential error.
+     */
+    async completeOnboarding(preferences: {
+        display_name: string;
+        use_case: string
+    }): Promise<{ error: AuthError | null }> {
+        if (!supabase) return { error: { message: 'Supabase not configured' } as AuthError };
+
+        const { error } = await supabase.auth.updateUser({
+            data: {
+                ...preferences,
+                onboarding_completed: true,
+                onboarding_completed_at: new Date().toISOString()
+            }
+        });
+
+        return { error };
     }
 }
 

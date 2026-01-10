@@ -1,3 +1,4 @@
+import { useRef, useState, useEffect } from 'react';
 import type { MonthlyUsage } from '../../services/dashboardService';
 import './UsageChart.css';
 
@@ -6,15 +7,47 @@ interface UsageChartProps {
 }
 
 export const UsageChart = ({ data }: UsageChartProps) => {
+    const containerRef = useRef<HTMLDivElement>(null);
+    const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
+
+    useEffect(() => {
+        if (!containerRef.current) return;
+
+        const resizeObserver = new ResizeObserver((entries) => {
+            for (const entry of entries) {
+                setDimensions({
+                    width: entry.contentRect.width,
+                    height: entry.contentRect.height
+                });
+            }
+        });
+
+        resizeObserver.observe(containerRef.current);
+        return () => resizeObserver.disconnect();
+    }, []);
+
     const maxCount = Math.max(...data.map(d => d.count), 1);
-    const height = 160;
-    const width = 100;
+    const { width, height } = dimensions;
     const padding = 10;
+    const verticalPadding = 20; // More space at top/bottom
+
+    // Only render if we have dimensions
+    if (width === 0 || height === 0) {
+        return (
+            <div className="usage-chart">
+                <div className="usage-chart__header">
+                    <h3 className="usage-chart__title">Prompt Usage Over Time</h3>
+                </div>
+                <div className="usage-chart__graph" ref={containerRef} />
+            </div>
+        );
+    }
 
     // Generate SVG path for area chart
     const points = data.map((d, i) => {
         const x = padding + (i / (data.length - 1)) * (width - 2 * padding);
-        const y = height - padding - (d.count / maxCount) * (height - 2 * padding);
+        // Invert Y axis, leave space at top/bottom
+        const y = height - verticalPadding - (d.count / maxCount) * (height - 2 * verticalPadding);
         return { x, y };
     });
 
@@ -25,8 +58,8 @@ export const UsageChart = ({ data }: UsageChartProps) => {
 
     // Area path (closed)
     const areaPath = linePath +
-        ` L${points[points.length - 1].x} ${height - padding}` +
-        ` L${padding} ${height - padding} Z`;
+        ` L${points[points.length - 1].x} ${height}` +
+        ` L${points[0].x} ${height} Z`;
 
     return (
         <div className="usage-chart">
@@ -40,13 +73,21 @@ export const UsageChart = ({ data }: UsageChartProps) => {
                 </div>
             </div>
 
-            <div className="usage-chart__graph">
-                <svg viewBox={`0 0 ${width} ${height}`} preserveAspectRatio="none">
+            <div className="usage-chart__graph" ref={containerRef}>
+                <svg width={width} height={height} style={{ overflow: 'visible' }}>
                     <defs>
                         <linearGradient id="chartGradient" x1="0%" y1="0%" x2="0%" y2="100%">
                             <stop offset="0%" stopColor="#8B5CF6" stopOpacity="0.3" />
-                            <stop offset="100%" stopColor="#8B5CF6" stopOpacity="0.02" />
+                            <stop offset="100%" stopColor="#8B5CF6" stopOpacity="0.0" />
                         </linearGradient>
+                        {/* Glass glow filter */}
+                        <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+                            <feGaussianBlur stdDeviation="2" result="coloredBlur" />
+                            <feMerge>
+                                <feMergeNode in="coloredBlur" />
+                                <feMergeNode in="SourceGraphic" />
+                            </feMerge>
+                        </filter>
                     </defs>
 
                     {/* Area fill */}
@@ -65,6 +106,8 @@ export const UsageChart = ({ data }: UsageChartProps) => {
                         strokeLinecap="round"
                         strokeLinejoin="round"
                         className="usage-chart__line"
+                        filter="url(#glow)"
+                        style={{ opacity: 0.8 }}
                     />
 
                     {/* Data points */}
@@ -74,9 +117,6 @@ export const UsageChart = ({ data }: UsageChartProps) => {
                             cx={p.x}
                             cy={p.y}
                             r="3"
-                            fill="var(--color-surface)"
-                            stroke="var(--accent-primary)"
-                            strokeWidth="2"
                             className="usage-chart__point"
                         />
                     ))}

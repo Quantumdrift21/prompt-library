@@ -1,22 +1,44 @@
+/* ========================================
+   Prompt List - PromptLab Grid
+   ======================================== */
+
 .prompt-list {
+    display: contents;
+    /* Let parent grid control layout */
+}
+
+/* If used standalone */
+.prompt-list--standalone {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-    gap: var(--spacing-md);
-    align-items: start;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+@media (max-width: 1024px) {
+    .prompt-list--standalone {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 640px) {
+    .prompt-list--standalone {
+        grid-template-columns: 1fr;
+    }
 }
 
 .prompt-list__empty {
+    grid-column: 1 / -1;
     text-align: center;
-    padding: var(--spacing-xl) var(--spacing-md);
+    padding: 60px 20px;
     color: var(--color-text-muted);
 }
 
 .prompt-list__empty p {
-    font-size: 1.125rem;
-    margin-bottom: var(--spacing-sm);
+    font-size: 1.1rem;
+    margin-bottom: 8px;
 }
 
 .prompt-list__empty-hint {
-    font-size: 0.875rem;
+    font-size: 0.9rem;
     opacity: 0.7;
 }

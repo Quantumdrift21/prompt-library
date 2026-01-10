@@ -1,93 +1,98 @@
-<div align="center">
+# Prompt Library
 
-# PROMPT LIBRARY
-
-[![License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](LICENSE)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
-[![React](https://img.shields.io/badge/React-19.0-61dafb?style=flat-square&logo=react&logoColor=black)](https://react.dev/)
-[![Vite](https://img.shields.io/badge/Vite-6.0-646cff?style=flat-square&logo=vite&logoColor=white)](https://vitejs.dev/)
-[![Privacy](https://img.shields.io/badge/Privacy-First-green?style=flat-square&logo=privacy&logoColor=white)](https://github.com/Quantumdrift21/prompt-library)
-
-[Features](#features) | [Tech Stack](#tech-stack) | [Getting Started](#getting-started) | [MCP Integration](#mcp-integration)
-
-</div>
-
-<br>
-
-> [!IMPORTANT]
-> **Your data stays with you.**
-> "Prompt Library" is designed as a **Local-First** application. Your prompts are stored in your browser's IndexedDB by default. Syncing to the cloud (Supabase) is completely optional and fully encrypted during transit. We prioritize user privacy and data sovereignty above all else.
-
-## Contents
-
-- [Features](#features)
-- [Tech Stack](#tech-stack)
-- [Getting Started](#getting-started)
-- [MCP Integration](#mcp-integration)
-- [License](#license)
-
-## Features
-
-*   **🔒 Privacy-First Architecture**: Built to work completely offline. reliable local storage ensures you never lose a prompt.
-*   **🔄 Seamless Sync**: Optional multi-device synchronization using Supabase.
-*   **📊 Analytics Dashboard**: Beautiful visualizations for your usage and engagement habits.
-*   **🎨 Premium UI**: "Dark Glass" aesthetic with a fully accessible Day/Night toggle.
-*   **📱 Progressive Web App**: Installable on desktop and mobile for a native experience.
-*   **⚡ Lightning Fast**: Powered by Vite and React 19 for instant interactions.
+A modern, local-first web application for managing, organizing, and syncing prompt engineering templates. It solves the problem of scattered prompt storage by providing a unified, searchable, and offline-capable interface with cloud synchronization capabilities.
 
 ## Tech Stack
 
-This project is built with a modern, performance-oriented stack:
+*   **Core**: React 18, TypeScript, Vite
+*   **Styling**: Vanilla CSS (CSS Variables for theming), Glassmorphism UI
+*   **State/Data**: React Hooks, IndexedDB (Local), Supabase (Cloud Sync)
+*   **Routing**: React Router DOM
+*   **Testing**: Vitest, React Testing Library
+*   **Linting**: ESLint, Prettier
 
--   **Frontend**: [React 19](https://react.dev/)
--   **Language**: [TypeScript](https://www.typescriptlang.org/)
--   **Build Tool**: [Vite](https://vitejs.dev/)
--   **Styling**: Vanilla CSS (Variables, Grid, Flexbox)
--   **Database**: IndexedDB (Local) + Supabase (Cloud)
+## Project Structure
 
-## Getting Started
-
-Follow these steps to set up your own instance.
-
-### 1. Clone the repository
-
-```bash
-git clone https://github.com/Quantumdrift21/prompt-library.git
-cd prompt-library
+```
+├── .agent/                 # Agent workflows and rules
+├── public/                 # Static assets (images, icons)
+├── src/
+│   ├── components/         # Reusable UI components
+│   │   ├── dashboard/      # Navigation and Sidebar
+│   │   ├── settings/       # Settings page sections
+│   │   └── ...             # Core components (PromptCard, Editor)
+│   ├── hooks/              # Custom React hooks (useAuth, useSync)
+│   ├── pages/              # Page views (Home, Profile, Settings)
+│   ├── services/           # Business logic & APIs
+│   │   ├── authService.ts  # Supabase Auth wrapper
+│   │   ├── indexedDb.ts    # Local database operations
+│   │   └── syncService.ts  # Offline-first sync logic
+│   ├── types/              # TypeScript definitions
+│   ├── App.tsx             # Main router and layout
+│   └── main.tsx            # Entry point
+├── supabase/               # SQL migrations and config
+└── vite.config.ts          # Build configuration
 ```
 
-### 2. Install dependencies
+## Core Features
 
-```bash
-npm install
-```
+*   **Prompt Management**: Create, edit, delete, and tag prompts.
+*   **Offline-First**: All data is stored locally in IndexedDB, serving content instantly even without internet.
+*   **Cloud Sync**: Automatic background synchronization with Supabase when online.
+*   **Search & Filtering**: Real-time filtering by tags and text search.
+*   **Collections**: Organize prompts into logical folders (in progress).
+*   **User Profiles**: Avatar upload and account management.
+*   **Theming**: Day/Night mode with premium glass aesthetics.
 
-### 3. Configure Environment
+## Data & Logic Flow
 
-Copy the example environment file and add your Supabase credentials (if using sync):
+1.  **Local Read**: The UI reads data primarily from `IndexedDB` via `indexedDbService` for instant performance.
+2.  **Write Path**: User actions (create/update) write immediately to `IndexedDB`.
+3.  **Sync**: The `syncService` listens for changes and pushes them to Supabase in the background. It also pulls remote changes to update the local store.
+4.  **Auth**: `authService` manages the user session, gating access to cloud storage but allowing offline guest usage.
 
-```bash
-cp .env.example .env.local
-```
+## Installation & Setup
 
-### 4. Run the development server
+1.  **Prerequisites**: Node.js v18+, npm.
+2.  **Install Dependencies**:
+    ```bash
+    npm install
+    ```
+3.  **Environment Setup**:
+    Create a `.env` file with Supabase credentials:
+    ```
+    VITE_SUPABASE_URL=your_project_url
+    VITE_SUPABASE_ANON_KEY=your_anon_key
+    ```
+4.  **Run Locally**:
+    ```bash
+    npm run dev
+    ```
+    Access at `http://localhost:5173`.
+5.  **Run Tests**:
+    ```bash
+    npm test
+    ```
 
-```bash
-npm run dev
-```
+## Key File Summaries
 
-## MCP Integration
+| File | Responsibility |
+| :--- | :--- |
+| `src/services/indexedDb.ts` | Handles all local CRUD operations and persistence. |
+| `src/services/syncService.ts` | Manages the bidirectional data sync between Local DB and Cloud. |
+| `src/services/authService.ts` | Wrapper around Supabase Auth for session management. |
+| `src/App.tsx` | Main application router and global context providers. |
+| `src/components/PromptEditor.tsx` | The core interface for creating and modifying prompts. |
+| `src/pages/SettingsPage.tsx` | User preferences and account management hub. |
 
-This project is ready for the **Model Context Protocol (MCP)**.
+## Future Roadmap
 
-*   **Server**: `@modelcontextprotocol/server-github`
-*   **Purpose**: Allows AI agents to read, write, and manage this repository efficiently.
-*   **Setup**: Ensure your `.env` contains a valid `GITHUB_PERSONAL_ACCESS_TOKEN`.
+*   **Performance**: Optimize React rendering for large prompt lists (virtualization).
+*   **Collections**: Finalize the Collections/Folders feature.
+*   **Security**: Implement stricter RLS policies for shared workspaces.
+*   **Stability**: **Critical Fix**: Investigate and resolve blank page rendering issue occasionally seen on strict routing.
+*   **Testing**: Expand test coverage for `syncService` edge cases.
 
----
 
-<div align="center">
 
-**[Quantumdrift21](https://github.com/Quantumdrift21)**
-
-</div>
+from now on follow instruction from agents and rules in rules folder for all the chats

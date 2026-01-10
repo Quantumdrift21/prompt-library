@@ -1,16 +1,17 @@
 import { useState, useCallback, useEffect, useMemo } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import type { Prompt, CreatePromptInput } from './types';
 import { PromptList, PromptEditor, EmptyState, ErrorBoundary } from './components';
 import { HeroSection } from './components/HeroSection';
 import { DarkLayout } from './components/layout';
-import { ProfileDashboard } from './pages/ProfileDashboard';
 import { Collections } from './pages/Collections';
-import { Analytics } from './pages/Analytics';
 import SettingsPage from './pages/SettingsPage';
 import { LandingPage } from './pages/LandingPage';
+import { Onboarding } from './pages/Onboarding';
+import { DashboardHome } from './pages/DashboardHome';
 import { indexedDbService } from './services/indexedDb';
 import { syncService } from './services/syncService';
+import { authService } from './services/authService';
 import { useCopy, useDebounce, useKeyboardShortcuts, useAuth } from './hooks';
 import './App.css';
 
@@ -221,21 +222,99 @@ function PromptLibrary() {
   );
 }
 
+/**
+ * ProtectedRoute component - redirects unauthenticated users to landing page.
+ * 
+ * @param children - The protected content to render.
+ * @returns Either the children or a redirect to landing.
+ */
+function ProtectedRoute({ children }: { children: React.ReactNode }) {
+  const { user, isLoading } = useAuth();
+
+  if (isLoading) {
+    return (
+      <div className="app-loading">
+        <div className="app-loading__spinner"></div>
+        <span>Loading...</span>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return <Navigate to="/" replace />;
+  }
+
+  return <>{children}</>;
+}
+
+/**
+ * AuthRedirect component - redirects authenticated users to appropriate page.
+ * Unauthenticated users see Landing, authenticated go to home/onboarding.
+ */
+function AuthRedirect() {
+  const { user, isLoading } = useAuth();
+
+  if (isLoading) {
+    return (
+      <div className="app-loading">
+        <div className="app-loading__spinner"></div>
+        <span>Loading...</span>
+      </div>
+    );
+  }
+
+  if (user) {
+    // Check if user has completed onboarding
+    if (authService.hasCompletedOnboarding()) {
+      return <Navigate to="/home" replace />;
+    } else {
+      return <Navigate to="/onboarding" replace />;
+    }
+  }
+
+  return <LandingPage />;
+}
+
 function App() {
   return (
     <Routes>
-      <Route path="/" element={
-        <ErrorBoundary>
-          <PromptLibrary />
-        </ErrorBoundary>
+      {/* Public Routes */}
+      <Route path="/" element={<AuthRedirect />} />
+
+      {/* Protected Routes */}
+      <Route path="/onboarding" element={
+        <ProtectedRoute>
+          <Onboarding />
+        </ProtectedRoute>
       } />
-      <Route path="/profile" element={<ProfileDashboard />} />
-      <Route path="/collections" element={<Collections />} />
-      <Route path="/analytics" element={<Analytics />} />
-      <Route path="/landing" element={<LandingPage />} />
-      <Route path="/settings" element={<SettingsPage />} />
+      <Route path="/home" element={
+        <ProtectedRoute>
+          <DashboardHome />
+        </ProtectedRoute>
+      } />
+      <Route path="/library" element={
+        <ProtectedRoute>
+          <ErrorBoundary>
+            <PromptLibrary />
+          </ErrorBoundary>
+        </ProtectedRoute>
+      } />
+      <Route path="/collections" element={
+        <ProtectedRoute>
+          <Collections />
+        </ProtectedRoute>
+      } />
+      <Route path="/settings" element={
+        <ProtectedRoute>
+          <SettingsPage />
+        </ProtectedRoute>
+      } />
+
+      {/* Fallback */}
+      <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
 }
 
 export default App;
+

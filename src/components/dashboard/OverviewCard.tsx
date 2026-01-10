@@ -6,7 +6,7 @@ interface OverviewCardProps {
 }
 
 export const OverviewCard = ({ stats }: OverviewCardProps) => {
-    const { totalPrompts, growthPercentage, created, used, favorite } = stats;
+    const { growthPercentage, created, used, favorite } = stats;
 
     // Calculate ring percentages for visual
     const total = created + used + favorite || 1;

@@ -1,4 +1,4 @@
-import { Component, ErrorInfo, ReactNode } from 'react';
+import { Component, type ErrorInfo, type ReactNode } from 'react';
 import './EmptyState.css'; // Re-use empty state styles for consistency
 
 interface Props {

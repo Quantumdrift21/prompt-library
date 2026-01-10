@@ -4,3 +4,5 @@ export { useAuth } from './useAuth';
 export { useSync } from './useSync';
 export { useKeyboardShortcuts } from './useKeyboardShortcuts';
 export { useProfilePicture } from './useProfilePicture';
+export { useTheme } from './useTheme';
+export { useMaintenance } from './useMaintenance';

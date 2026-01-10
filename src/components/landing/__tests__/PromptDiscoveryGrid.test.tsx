@@ -1,8 +1,10 @@
+
 import { render, screen } from '@testing-library/react';
+import { describe, it, test, expect } from 'vitest';
 import { PromptDiscoveryGrid } from '../PromptDiscoveryGrid';
 
 describe('PromptDiscoveryGrid', () => {
-    test('renders prompt cards with titles', () => {
+    it('renders prompt cards with titles', () => {
         render(<PromptDiscoveryGrid />);
         expect(screen.getByText('Socratic Python Tutor')).toBeInTheDocument();
         expect(screen.getByText('SEO Blog Post Generator')).toBeInTheDocument();

@@ -151,13 +151,23 @@ html {
 }
 
 .nav-link-login {
-  color: var(--color-text-muted);
+  padding: 0.5rem 1.25rem;
+  color: var(--color-text-white);
   text-decoration: none;
-  font-weight: 500;
+  font-weight: 600;
+  background: transparent;
+  border: 1.5px solid rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
 }
 
 .nav-link-login:hover {
-  color: var(--color-text-white);
+  background: rgba(255, 255, 255, 0.08);
+  border-color: var(--color-accent-teal);
+  color: var(--color-accent-teal);
+  box-shadow: 0 0 20px rgba(78, 205, 196, 0.2);
+  transform: translateY(-1px);
 }
 
 .btn-signup {
@@ -200,33 +210,106 @@ html {
 }
 
 /* Hero Section */
+/* Hero Section */
 .landing-hero {
-  text-align: center;
-  padding: 6rem 2rem 4rem;
-  max-width: 900px;
+  padding: 4rem 2rem 2rem;
+  max-width: 1200px;
   margin: 0 auto;
   animation: fadeInUp 0.8s ease-out;
 }
 
-.landing-hero h1 {
+.hero-content-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3rem;
+  /* Reduced gap slightly */
+  margin-bottom: 3rem;
+  position: relative;
+}
+
+.hero-video-container {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+  /* Create a masking container to crop the video */
+  height: 280px;
+  /* Reduced height to crop tighter if we zoom out */
+  overflow: hidden;
+  align-items: center;
+  /* Center video vertically in the cropped area */
+}
+
+.hero-video {
+  width: 110%;
+  margin-left: -5%;
+  height: auto;
+  /* Removed transform to avoid GPU composition (stacking context) bugs */
+  /* transform: scale(1.1); */
+
+  /* Screen blending mode handles black backgrounds better for light text/glows */
+  mix-blend-mode: screen;
+  background-color: transparent;
+
+  filter: contrast(1.2);
+  position: relative;
+  display: block;
+  /* Eliminate line-height spacing */
+  opacity: 0;
+  transition: opacity 0.8s ease;
+}
+
+.hero-video.loaded {
+  opacity: 1;
+}
+
+.hero-text-content {
+  flex: 1;
+  text-align: left;
+}
+
+.hero-text-content h1 {
   font-size: 3.5rem;
+  /* Reduced size slightly to balance with smaller video zoom */
   font-weight: 800;
   line-height: 1.1;
   margin-bottom: 1.5rem;
-  background: linear-gradient(135deg, #fff 0%, var(--color-accent-orange) 50%, var(--color-accent-teal) 100%);
-  background-size: 200% 200%;
+  /* Exact match to Prompt Library Logo gradient */
+  background: linear-gradient(90deg, var(--color-accent-orange), var(--color-accent-teal));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  animation: fadeInUp 0.8s ease-out, gradientShift 6s ease infinite;
+  animation: fadeInUp 0.8s ease-out;
 }
 
 .hero-subtitle {
   font-size: 1.25rem;
   color: var(--color-text-muted);
-  max-width: 700px;
-  margin: 0 auto 3rem;
+  max-width: 600px;
+  margin: 0 0 2rem;
   line-height: 1.6;
+}
+
+/* Responsive Helper */
+@media (max-width: 900px) {
+  .hero-content-wrapper {
+    flex-direction: column;
+    text-align: center;
+    gap: 2rem;
+  }
+
+  .hero-video-container {
+    justify-content: center;
+    height: 220px;
+  }
+
+  .hero-text-content {
+    text-align: center;
+  }
+
+  .hero-text-content h1 {
+    font-size: 2.5rem;
+  }
 }
 
 /* Hero Carousel */
@@ -348,13 +431,30 @@ html {
 }
 
 .feature-card {
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 16px;
-  padding: 2rem;
+  position: relative;
+  background: linear-gradient(145deg, rgba(30, 30, 46, 0.8), rgba(20, 20, 30, 0.9));
+  border: 1px solid rgba(255, 255, 255, 0.03);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 24px;
+  padding: 3rem 2rem;
   text-align: center;
-  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
-  animation: fadeInUp 0.6s ease-out backwards;
+  transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+  box-shadow:
+    0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+}
+
+/* 3D Depth Effect Layer */
+.feature-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 24px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, transparent 100%);
+  pointer-events: none;
 }
 
 /* Staggered entrance animations */
@@ -371,29 +471,62 @@ html {
 }
 
 .feature-card:hover {
-  transform: translateY(-8px) scale(1.02);
+  transform: translateY(-12px) perspective(1000px) rotateX(2deg);
+  background: linear-gradient(145deg, rgba(35, 35, 50, 0.9), rgba(25, 25, 40, 0.95));
   box-shadow:
-    0 20px 40px rgba(0, 0, 0, 0.4),
-    0 0 30px rgba(255, 107, 53, 0.15);
-  border-color: rgba(255, 107, 53, 0.3);
+    0 25px 50px -12px rgba(0, 0, 0, 0.6),
+    0 0 30px rgba(255, 107, 53, 0.05),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 107, 53, 0.2);
 }
 
 .feature-card h3 {
-  font-size: 1.25rem;
-  font-weight: 700;
-  margin-bottom: 0.75rem;
-  color: var(--color-accent-orange);
+  font-size: 1.5rem;
+  font-weight: 800;
+  margin-bottom: 1rem;
+  background: linear-gradient(90deg, #fff, #ccc);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
   transition: transform 0.3s ease;
+  position: relative;
+  z-index: 1;
 }
 
 .feature-card:hover h3 {
   transform: scale(1.05);
+  background: linear-gradient(90deg, var(--color-accent-orange), #ff9f7a);
+  -webkit-background-clip: text;
+  background-clip: text;
 }
 
 .feature-card p {
-  font-size: 0.95rem;
+  font-size: 1rem;
   color: var(--color-text-muted);
-  line-height: 1.6;
+  line-height: 1.7;
+  position: relative;
+  z-index: 1;
+  transition: color 0.3s ease;
+}
+
+.feature-card:hover p {
+  color: var(--color-text-white);
+}
+
+/* Clickable feature cards */
+.feature-card--clickable {
+  cursor: pointer;
+  width: 100%;
+  font-family: inherit;
+}
+
+.feature-card--clickable:focus {
+  outline: 2px solid var(--color-accent-orange);
+  outline-offset: 2px;
+}
+
+.feature-card--clickable:active {
+  transform: translateY(-8px) perspective(1000px) rotateX(2deg);
 }
 
 /* Footer */

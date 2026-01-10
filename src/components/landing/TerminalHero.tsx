@@ -40,7 +40,7 @@ const useTypewriter = (text: string, speed = 30, startDelay = 500): string => {
     useEffect(() => {
         setDisplayedText('');
         let currentIndex = 0;
-        let timeoutId: NodeJS.Timeout;
+        let timeoutId: ReturnType<typeof setTimeout>;
 
         const startTyping = () => {
             const typeNextChar = () => {

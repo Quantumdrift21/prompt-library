@@ -58,16 +58,25 @@ export const UserProfile = ({ user, onClose }: UserProfileProps) => {
                         width: '80px',
                         height: '80px',
                         borderRadius: '50%',
-                        background: 'linear-gradient(135deg, #8b5cf6, #6d28d9)',
+                        background: user.user_metadata?.avatar_url ? 'transparent' : 'linear-gradient(135deg, #8b5cf6, #6d28d9)',
                         color: 'white',
                         fontSize: '2rem',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
                         margin: '0 auto 20px auto',
-                        fontWeight: 'bold'
+                        fontWeight: 'bold',
+                        overflow: 'hidden'
                     }}>
-                        {(user.user_metadata?.full_name || user.email || 'U').slice(0, 2).toUpperCase()}
+                        {user.user_metadata?.avatar_url ? (
+                            <img
+                                src={user.user_metadata.avatar_url}
+                                alt="Profile"
+                                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                            />
+                        ) : (
+                            (user.user_metadata?.full_name || user.email || 'U').slice(0, 2).toUpperCase()
+                        )}
                     </div>
 
                     <h3 style={{ margin: '0 0 5px 0' }}>{user.user_metadata?.full_name || 'User'}</h3>

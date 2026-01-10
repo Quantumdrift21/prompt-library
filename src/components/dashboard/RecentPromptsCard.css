@@ -46,12 +46,10 @@
 .recent-prompts-card__list {
     display: flex;
     flex-direction: column;
-    gap: 8px;
-    /* Tighter gap */
-    max-height: 320px;
-    overflow-y: auto;
+    gap: 12px;
     padding-right: 4px;
     flex: 1;
+    min-height: 0;
 }
 
 /* Scrollbar */
@@ -78,14 +76,16 @@
 /* Item */
 .recent-prompts-card__item {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
+    /* Align top for wrapped text */
     gap: 16px;
-    padding: 12px;
+    padding: 16px;
     background: rgba(255, 255, 255, 0.02);
     border: 1px solid transparent;
     border-radius: var(--radius-md);
     transition: all 0.2s ease;
     cursor: pointer;
+    min-height: auto;
 }
 
 .recent-prompts-card__item:hover {
@@ -113,25 +113,27 @@
 }
 
 .recent-prompts-card__name {
-    font-size: 0.9rem;
+    font-size: 0.95rem;
     font-weight: 500;
     color: var(--color-text);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    margin-bottom: 2px;
+    margin-bottom: 4px;
+    line-height: 1.4;
+    /* Remove text truncation to allow full view */
 }
 
 .recent-prompts-card__author {
     font-size: 0.75rem;
     color: var(--color-text-muted);
+    display: block;
 }
 
 .recent-prompts-card__meta {
     display: flex;
     flex-direction: column;
     align-items: flex-end;
-    gap: 4px;
+    gap: 6px;
+    min-width: 60px;
+    /* Prevent squashing */
 }
 
 .recent-prompts-card__time {

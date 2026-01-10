@@ -12,6 +12,7 @@ const samplePrompts: Prompt[] = [
         created_at: '2026-01-01T10:00:00.000Z',
         updated_at: '2026-01-01T10:00:00.000Z',
         user_id: 'guest',
+        deleted_at: null,
     },
     {
         id: '2',
@@ -22,6 +23,7 @@ const samplePrompts: Prompt[] = [
         created_at: '2026-01-02T10:00:00.000Z',
         updated_at: '2026-01-02T10:00:00.000Z',
         user_id: 'guest',
+        deleted_at: null,
     },
     {
         id: '3',
@@ -32,6 +34,7 @@ const samplePrompts: Prompt[] = [
         created_at: '2026-01-03T10:00:00.000Z',
         updated_at: '2026-01-03T10:00:00.000Z',
         user_id: 'guest',
+        deleted_at: null,
     },
     {
         id: '4',
@@ -42,6 +45,7 @@ const samplePrompts: Prompt[] = [
         created_at: '2026-01-04T10:00:00.000Z',
         updated_at: '2026-01-04T10:00:00.000Z',
         user_id: 'guest',
+        deleted_at: null,
     },
     {
         id: '5',
@@ -52,6 +56,7 @@ const samplePrompts: Prompt[] = [
         created_at: '2026-01-05T10:00:00.000Z',
         updated_at: '2026-01-05T10:00:00.000Z',
         user_id: 'guest',
+        deleted_at: null,
     },
 ];
 
@@ -77,6 +82,7 @@ export const mockDataService = {
             created_at: now,
             updated_at: now,
             user_id: 'guest',
+            deleted_at: null,
         };
         prompts = [newPrompt, ...prompts];
         return newPrompt;

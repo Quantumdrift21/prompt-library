@@ -1,0 +1,282 @@
+/* ========================================
+   Maintenance Section Styles
+   ======================================== */
+
+.maintenance-section {
+    margin-top: 24px;
+}
+
+/* Progress Bar */
+.maintenance-section__progress {
+    margin: 16px 0;
+}
+
+.maintenance-section__progress-bar {
+    height: 8px;
+    background: var(--color-border);
+    border-radius: var(--radius-full);
+    overflow: hidden;
+}
+
+.maintenance-section__progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--color-primary), #a78bfa);
+    border-radius: var(--radius-full);
+    transition: width 0.3s ease-out;
+}
+
+.maintenance-section__progress-text {
+    display: block;
+    margin-top: 8px;
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+}
+
+/* Error & Result Messages */
+.maintenance-section__error {
+    padding: 12px 16px;
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    border-radius: var(--radius-md);
+    color: var(--color-danger);
+    margin: 16px 0;
+}
+
+.maintenance-section__result {
+    padding: 12px 16px;
+    border-radius: var(--radius-md);
+    margin: 16px 0;
+}
+
+.maintenance-section__result.success {
+    background: rgba(34, 197, 94, 0.1);
+    border: 1px solid rgba(34, 197, 94, 0.3);
+    color: var(--color-success);
+}
+
+.maintenance-section__result.error {
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    color: var(--color-danger);
+}
+
+/* Analysis Report */
+.maintenance-section__report {
+    padding: 20px;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    margin: 16px 0;
+}
+
+.maintenance-section__report-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--color-text);
+    margin: 0 0 16px 0;
+}
+
+.maintenance-section__stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.maintenance-section__stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 16px;
+    background: var(--color-border);
+    border-radius: var(--radius-md);
+}
+
+.maintenance-section__stat-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--color-text);
+}
+
+.maintenance-section__stat-value--warning {
+    color: var(--color-warning);
+}
+
+.maintenance-section__stat-label {
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    margin-top: 4px;
+}
+
+/* Duplicates List */
+.maintenance-section__duplicates {
+    margin-top: 16px;
+}
+
+.maintenance-section__duplicates h4 {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--color-text);
+    margin: 0 0 12px 0;
+}
+
+.maintenance-section__duplicate-group {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 12px;
+    background: var(--color-border);
+    border-radius: var(--radius-sm);
+    margin-bottom: 8px;
+}
+
+.maintenance-section__duplicate-keep {
+    font-size: 0.9rem;
+    color: var(--color-success);
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 60%;
+}
+
+.maintenance-section__duplicate-delete {
+    font-size: 0.85rem;
+    color: var(--color-danger);
+}
+
+.maintenance-section__duplicate-more {
+    display: block;
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    font-style: italic;
+}
+
+/* Actions List */
+.maintenance-section__actions-list {
+    margin-top: 16px;
+}
+
+.maintenance-section__actions-list h4 {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--color-text);
+    margin: 0 0 8px 0;
+}
+
+.maintenance-section__actions-list ul {
+    margin: 0;
+    padding-left: 20px;
+}
+
+.maintenance-section__actions-list li {
+    font-size: 0.9rem;
+    color: var(--color-text-muted);
+    margin-bottom: 4px;
+}
+
+/* Buttons */
+.maintenance-section__actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 16px;
+}
+
+.maintenance-section__btn {
+    padding: 10px 20px;
+    border-radius: var(--radius-md);
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: none;
+}
+
+.maintenance-section__btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.maintenance-section__btn--primary {
+    background: var(--color-primary);
+    color: white;
+}
+
+.maintenance-section__btn--primary:hover:not(:disabled) {
+    background: var(--color-primary-hover);
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+}
+
+.maintenance-section__btn--secondary {
+    background: var(--color-surface);
+    color: var(--color-text);
+    border: 1px solid var(--color-border);
+}
+
+.maintenance-section__btn--secondary:hover:not(:disabled) {
+    background: var(--color-surface-hover);
+}
+
+.maintenance-section__btn--danger {
+    background: var(--color-danger);
+    color: white;
+}
+
+.maintenance-section__btn--danger:hover:not(:disabled) {
+    background: #dc2626;
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+}
+
+/* Clean Message */
+.maintenance-section__clean {
+    padding: 16px;
+    background: rgba(34, 197, 94, 0.1);
+    border: 1px solid rgba(34, 197, 94, 0.3);
+    border-radius: var(--radius-md);
+    color: var(--color-success);
+    text-align: center;
+}
+
+/* Quick Actions */
+.maintenance-section__quick-actions {
+    margin-top: 24px;
+    padding-top: 16px;
+    border-top: 1px solid var(--color-border);
+}
+
+.maintenance-section__quick-btn {
+    padding: 8px 16px;
+    background: transparent;
+    border: 1px dashed var(--color-border);
+    border-radius: var(--radius-md);
+    color: var(--color-text-muted);
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.maintenance-section__quick-btn:hover:not(:disabled) {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+    background: rgba(139, 92, 246, 0.05);
+}
+
+.maintenance-section__quick-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Responsive */
+@media (max-width: 767px) {
+    .maintenance-section__stats {
+        grid-template-columns: 1fr;
+    }
+
+    .maintenance-section__duplicate-group {
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .maintenance-section__duplicate-keep {
+        max-width: 100%;
+    }
+}

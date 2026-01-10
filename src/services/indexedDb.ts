@@ -1,11 +1,12 @@
-import type { Prompt, CreatePromptInput, UpdatePromptInput } from '../types';
+import type { Prompt, CreatePromptInput, UpdatePromptInput, Collection, CreateCollectionInput, UpdateCollectionInput } from '../types';
 import { generateId, getCurrentTimestamp } from '../utils';
 
 const DB_NAME = 'prompt-library';
-const DB_VERSION = 4; // Incremented for user settings store
+const DB_VERSION = 5; // Incremented for collections store
 const STORE_PROMPTS = 'prompts';
 const STORE_USAGE = 'usage_logs';
 const STORE_SETTINGS = 'user_settings';
+const STORE_COLLECTIONS = 'collections';
 
 export interface UsageLog {
     id: string;
@@ -72,13 +73,14 @@ class IndexedDBStorageService {
                     const store = db.createObjectStore(STORE_PROMPTS, { keyPath: 'id' });
                     store.createIndex('updated_at', 'updated_at', { unique: false });
                     store.createIndex('favorite', 'favorite', { unique: false });
-                    store.createIndex('user_id', 'user_id', { unique: false }); // New index
+                    store.createIndex('user_id', 'user_id', { unique: false });
+                    store.createIndex('collection_id', 'collection_id', { unique: false }); // New V5
+                    store.createIndex('is_draft', 'is_draft', { unique: false }); // New V5
                 } else {
                     // Upgrade existing store
                     const store = transaction!.objectStore(STORE_PROMPTS);
                     if (!store.indexNames.contains('user_id')) {
                         store.createIndex('user_id', 'user_id', { unique: false });
-
                         // Migrate existing data to 'guest'
                         store.openCursor().onsuccess = (e) => {
                             const cursor = (e.target as IDBRequest).result as IDBCursorWithValue;
@@ -92,6 +94,13 @@ class IndexedDBStorageService {
                             }
                         };
                     }
+                    // V5 Upgrades: Add indices for collections and drafts
+                    if (!store.indexNames.contains('collection_id')) {
+                        store.createIndex('collection_id', 'collection_id', { unique: false });
+                    }
+                    if (!store.indexNames.contains('is_draft')) {
+                        store.createIndex('is_draft', 'is_draft', { unique: false });
+                    }
                 }
 
                 // Create usage logs store if needed
@@ -101,19 +110,26 @@ class IndexedDBStorageService {
                     store.createIndex('timestamp', 'timestamp', { unique: false });
                 }
 
-                // Create user settings store if needed (for profile pictures, preferences)
+                // Create user settings store if needed
                 if (!db.objectStoreNames.contains(STORE_SETTINGS)) {
                     db.createObjectStore(STORE_SETTINGS, { keyPath: 'user_id' });
+                }
+
+                // Create collections store if needed (V5)
+                if (!db.objectStoreNames.contains(STORE_COLLECTIONS)) {
+                    const store = db.createObjectStore(STORE_COLLECTIONS, { keyPath: 'id' });
+                    store.createIndex('user_id', 'user_id', { unique: false });
+                    store.createIndex('parent_id', 'parent_id', { unique: false });
                 }
             };
         });
 
-        // 3-second timeout race to prevent infinite hanging
+        // 5-second timeout race to prevent infinite hanging
         const timeout = new Promise<void>((resolve) => {
             setTimeout(() => {
-                console.warn('IndexedDB init timed out. Proceeding without DB.');
+                console.warn('IndexedDB init timed out (5000ms). Proceeding without DB.');
                 resolve();
-            }, 3000);
+            }, 5000);
         });
 
         this.initPromise = Promise.race([initLogic, timeout]);
@@ -414,6 +430,129 @@ class IndexedDBStorageService {
             transaction.onerror = () => resolve();
         });
     }
+
+    // =========================================
+    // Collections Methods
+    // =========================================
+
+    async getCollections(): Promise<Collection[]> {
+        await this.init();
+        if (!this.db) return [];
+
+        return new Promise((resolve) => {
+            const transaction = this.db!.transaction(STORE_COLLECTIONS, 'readonly');
+            const store = transaction.objectStore(STORE_COLLECTIONS);
+            const index = store.index('user_id');
+            const request = index.getAll(this.currentUserId);
+
+            request.onsuccess = () => {
+                resolve(request.result as Collection[]);
+            };
+            request.onerror = () => resolve([]);
+        });
+    }
+
+    async createCollection(input: CreateCollectionInput): Promise<Collection> {
+        await this.init();
+        const now = getCurrentTimestamp();
+        const collection: Collection = {
+            ...input,
+            id: generateId(),
+            created_at: now,
+            user_id: this.currentUserId
+        };
+
+        if (!this.db) return collection;
+
+        return new Promise((resolve) => {
+            const transaction = this.db!.transaction(STORE_COLLECTIONS, 'readwrite');
+            const store = transaction.objectStore(STORE_COLLECTIONS);
+            store.add(collection);
+            transaction.oncomplete = () => resolve(collection);
+            transaction.onerror = () => resolve(collection);
+        });
+    }
+
+    async updateCollection(id: string, input: UpdateCollectionInput): Promise<Collection | null> {
+        await this.init();
+        if (!this.db) return null;
+
+        // Verify existence and ownership
+        return new Promise((resolve) => {
+            const transaction = this.db!.transaction(STORE_COLLECTIONS, 'readwrite');
+            const store = transaction.objectStore(STORE_COLLECTIONS);
+            const request = store.get(id);
+
+            request.onsuccess = () => {
+                const existing = request.result as Collection;
+                if (existing && existing.user_id === this.currentUserId) {
+                    const updated: Collection = {
+                        ...existing,
+                        ...input
+                    };
+                    store.put(updated);
+                    resolve(updated);
+                } else {
+                    resolve(null);
+                }
+            };
+            request.onerror = () => resolve(null);
+        });
+    }
+
+    async deleteCollection(id: string): Promise<boolean> {
+        await this.init();
+        if (!this.db) return false;
+
+        return new Promise((resolve) => {
+            const transaction = this.db!.transaction([STORE_COLLECTIONS, STORE_PROMPTS], 'readwrite');
+            const colStore = transaction.objectStore(STORE_COLLECTIONS);
+            const promptStore = transaction.objectStore(STORE_PROMPTS);
+
+            // 1. Get collection to verify owner
+            const getRequest = colStore.get(id);
+            getRequest.onsuccess = () => {
+                const existing = getRequest.result as Collection;
+                if (!existing || existing.user_id !== this.currentUserId) {
+                    resolve(false);
+                    return;
+                }
+
+                // 2. Delete collection
+                colStore.delete(id);
+
+                // 3. Move prompts in this collection to root (remove collection_id)
+                // Note: Index would be faster but requires opening cursor on index
+                const promptCursorRequest = promptStore.index('collection_id').openCursor(IDBKeyRange.only(id));
+                promptCursorRequest.onsuccess = (e) => {
+                    const cursor = (e.target as IDBRequest).result as IDBCursorWithValue;
+                    if (cursor) {
+                        const prompt = cursor.value;
+                        delete prompt.collection_id;
+                        cursor.update(prompt);
+                        cursor.continue();
+                    }
+                };
+
+                // Also delete children collections? Or move them to root?
+                // For "Move to Root/Unfiled is safest" design decision => Move children to root
+                const childrenCursorRequest = colStore.index('parent_id').openCursor(IDBKeyRange.only(id));
+                childrenCursorRequest.onsuccess = (e) => {
+                    const cursor = (e.target as IDBRequest).result as IDBCursorWithValue;
+                    if (cursor) {
+                        const child = cursor.value;
+                        delete child.parent_id;
+                        cursor.update(child);
+                        cursor.continue();
+                    }
+                };
+            };
+
+            transaction.oncomplete = () => resolve(true);
+            transaction.onerror = () => resolve(false);
+        });
+    }
 }
+
 
 export const indexedDbService = new IndexedDBStorageService();

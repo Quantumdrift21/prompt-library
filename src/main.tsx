@@ -1,4 +1,4 @@
-import { StrictMode } from 'react'
+import { StrictMode } from 'react' // Force HMR
 import { createRoot } from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
 import './index.css'

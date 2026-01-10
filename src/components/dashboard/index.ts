@@ -1,5 +1,3 @@
-export { DashboardNav } from './DashboardNav';
-export { IconSidebar } from './IconSidebar';
 export { OverviewCard } from './OverviewCard';
 export { TodayActivityCard } from './TodayActivityCard';
 export { OutputCard } from './OutputCard';
