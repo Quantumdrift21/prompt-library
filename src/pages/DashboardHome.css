@@ -152,9 +152,24 @@
 
 .metric-icon-group {
     display: flex;
-    gap: 0.5rem;
-    font-size: 1.25rem;
-    opacity: 0.8;
+    gap: 0.75rem;
+    font-size: 1.5rem;
+}
+
+/* Filled icon styling for metric icons */
+.metric-icon-group .icon-3d-cyan {
+    color: var(--color-accent-teal, #00d4ff);
+    fill: rgba(0, 212, 255, 0.2);
+}
+
+.metric-icon-group .icon-3d-orange {
+    color: var(--color-accent-orange, #ff6b35);
+    fill: rgba(255, 107, 53, 0.3);
+}
+
+.metric-icon-group .icon-3d-purple {
+    color: var(--color-accent-purple, #a855f7);
+    fill: rgba(168, 85, 247, 0.2);
 }
 
 .metric-label {
