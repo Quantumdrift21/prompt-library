@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
+import { ArrowUpDown, ChevronDown, ChevronUp, Check } from 'lucide-react';
 import './FilterBar.css';
 
 export type SortOption = 'recent' | 'alphabetical' | 'usage';
@@ -75,9 +76,11 @@ export const FilterBar = ({
                             aria-haspopup="listbox"
                             aria-expanded={sortDropdownOpen}
                         >
-                            <span className="filter-bar__dropdown-icon">↕</span>
+                            <span className="filter-bar__dropdown-icon"><ArrowUpDown size={14} /></span>
                             <span>Sort: {currentSortLabel}</span>
-                            <span className="filter-bar__dropdown-chevron">{sortDropdownOpen ? '▲' : '▼'}</span>
+                            <span className="filter-bar__dropdown-chevron">
+                                {sortDropdownOpen ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+                            </span>
                         </button>
                         {sortDropdownOpen && (
                             <div className="filter-bar__dropdown-menu" role="listbox">
@@ -92,7 +95,7 @@ export const FilterBar = ({
                                         role="option"
                                         aria-selected={sortOption === opt.value}
                                     >
-                                        {sortOption === opt.value && <span className="filter-bar__check">✓</span>}
+                                        {sortOption === opt.value && <span className="filter-bar__check"><Check size={14} /></span>}
                                         {opt.label}
                                     </button>
                                 ))}
@@ -109,14 +112,16 @@ export const FilterBar = ({
                                 aria-haspopup="listbox"
                                 aria-expanded={tagsDropdownOpen}
                             >
-                                <span className="filter-bar__dropdown-icon">🏷</span>
+                                <span className="filter-bar__dropdown-icon"><ArrowUpDown size={14} className="rotate-90" /></span>
                                 <span>
                                     Tags
                                     {selectedTags.size > 0 && (
                                         <span className="filter-bar__badge">{selectedTags.size}</span>
                                     )}
                                 </span>
-                                <span className="filter-bar__dropdown-chevron">{tagsDropdownOpen ? '▲' : '▼'}</span>
+                                <span className="filter-bar__dropdown-chevron">
+                                    {tagsDropdownOpen ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+                                </span>
                             </button>
                             {tagsDropdownOpen && (
                                 <div className="filter-bar__dropdown-menu filter-bar__dropdown-menu--tags" role="listbox">
@@ -143,7 +148,7 @@ export const FilterBar = ({
                                                     aria-selected={selectedTags.has(tag)}
                                                 >
                                                     <span className={`filter-bar__checkbox ${selectedTags.has(tag) ? 'checked' : ''}`}>
-                                                        {selectedTags.has(tag) ? '✓' : ''}
+                                                        {selectedTags.has(tag) && <Check size={12} strokeWidth={3} />}
                                                     </span>
                                                     #{tag}
                                                 </button>
@@ -178,7 +183,7 @@ export const FilterBar = ({
                     </span>
                     {hasActiveFilters && (
                         <button className="filter-bar__clear" onClick={onClearFilters}>
-                            ✕ Clear filters
+                            <span style={{ marginRight: 4, display: 'inline-flex' }}>✕</span> Clear filters
                         </button>
                     )}
                 </div>

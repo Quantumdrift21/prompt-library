@@ -1,0 +1,44 @@
+.star-rating {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+}
+
+.star-rating__star {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    color: rgba(255, 255, 255, 0.2);
+    transition: transform 0.1s ease, color 0.1s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.star-rating__star--filled {
+    color: #fbbf24;
+    /* Amber-400 */
+}
+
+/* Allow hovering over stars to show potential selection */
+.star-rating:not(.star-rating--readonly) .star-rating__star:hover,
+.star-rating:not(.star-rating--readonly) .star-rating__star:hover~.star-rating__star {
+    color: rgba(255, 255, 255, 0.2);
+}
+
+.star-rating:not(.star-rating--readonly):hover .star-rating__star {
+    /* Logic handled in JS for hover state usually, but simplified here */
+}
+
+.star-rating__star:hover {
+    transform: scale(1.2);
+}
+
+.star-rating--readonly .star-rating__star {
+    cursor: default;
+}
+
+.star-rating--readonly .star-rating__star:hover {
+    transform: none;
+}

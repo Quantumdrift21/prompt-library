@@ -167,6 +167,25 @@
     transition: all 0.2s ease;
     text-align: left;
     width: 100%;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Shimmer effect */
+.settings-nav-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.08), transparent);
+    transition: left 0.5s ease;
+    pointer-events: none;
+}
+
+.settings-nav-item:hover::before {
+    left: 100%;
 }
 
 .settings-nav-item__content {
@@ -205,7 +224,8 @@
 /* Hover State */
 .settings-nav-item:hover {
     background: rgba(255, 255, 255, 0.05);
-    border-color: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 107, 53, 0.25);
+    box-shadow: 0 0 12px rgba(255, 107, 53, 0.1);
 }
 
 .settings-nav-item:hover .settings-nav-item__icon {
@@ -297,11 +317,33 @@
     padding: 1.5rem;
     margin-bottom: 1.5rem;
     transition: all 0.2s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Shimmer effect layer */
+.settings-glass-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.05), transparent);
+    transition: left 0.6s ease;
+    pointer-events: none;
+}
+
+.settings-glass-card:hover::before {
+    left: 100%;
 }
 
 .settings-glass-card:hover {
-    border-color: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 107, 53, 0.25);
     background: rgba(255, 255, 255, 0.05);
+    box-shadow:
+        0 8px 24px rgba(0, 0, 0, 0.3),
+        0 0 15px rgba(255, 107, 53, 0.1);
 }
 
 .settings-glass-card__title {

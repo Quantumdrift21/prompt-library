@@ -280,6 +280,11 @@ function App() {
     <Routes>
       {/* Public Routes */}
       <Route path="/" element={<AuthRedirect />} />
+      <Route path="/collections" element={
+        <ErrorBoundary>
+          <Collections />
+        </ErrorBoundary>
+      } />
 
       {/* Protected Routes */}
       <Route path="/onboarding" element={
@@ -299,11 +304,7 @@ function App() {
           </ErrorBoundary>
         </ProtectedRoute>
       } />
-      <Route path="/collections" element={
-        <ProtectedRoute>
-          <Collections />
-        </ProtectedRoute>
-      } />
+
       <Route path="/settings" element={
         <ProtectedRoute>
           <SettingsPage />

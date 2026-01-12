@@ -124,12 +124,12 @@ class IndexedDBStorageService {
             };
         });
 
-        // 5-second timeout race to prevent infinite hanging
+        // 8-second timeout race to prevent infinite hanging
         const timeout = new Promise<void>((resolve) => {
             setTimeout(() => {
-                console.warn('IndexedDB init timed out (5000ms). Proceeding without DB.');
+                console.error('IndexedDB init timed out (8000ms). App may work in fallback, but data persistence is disabled.');
                 resolve();
-            }, 5000);
+            }, 8000);
         });
 
         this.initPromise = Promise.race([initLogic, timeout]);

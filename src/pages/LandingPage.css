@@ -416,6 +416,48 @@ html {
   transform: translateY(-2px);
 }
 
+.category-pill--active {
+  background: linear-gradient(135deg, #ff6b35, #ff8c5a);
+  color: #fff;
+  border-color: transparent;
+  box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3);
+}
+
+.category-pill--active:hover {
+  background: linear-gradient(135deg, #e55a2b, #ff8c5a);
+}
+
+.discovery-load-more {
+  display: flex;
+  justify-content: center;
+  margin-top: 3rem;
+  width: 100%;
+}
+
+.discovery-load-more button {
+  padding: 0.75rem 2rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 999px;
+  color: var(--color-text-white);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  backdrop-filter: blur(8px);
+}
+
+.discovery-load-more button:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: var(--color-accent-teal);
+  color: var(--color-accent-teal);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.discovery-load-more button:active {
+  transform: translateY(0);
+}
+
 /* Features Section */
 .features-section {
   padding: 4rem 2rem;

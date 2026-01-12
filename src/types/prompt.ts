@@ -54,6 +54,22 @@ export interface Prompt {
 
   /** Content hash for deduplication (generated from normalized title + content) */
   content_hash?: string;
+
+  // =========================================
+  // Public / Community Fields
+  // =========================================
+
+  /** Whether the prompt is a public/community prompt */
+  is_public?: boolean;
+
+  /** Author name for public prompts */
+  author_name?: string;
+
+  /** Community rating */
+  rating?: number;
+
+  /** Fork/Copy count */
+  fork_count?: number;
 }
 
 /**

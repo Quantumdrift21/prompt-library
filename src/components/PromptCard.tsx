@@ -1,7 +1,11 @@
-// import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+
 import type { Prompt } from '../types';
 import { indexedDbService } from '../services/indexedDb';
+import { PromptIcon } from './common/PromptIcon';
+import { Tooltip } from './common/Tooltip';
+import { PromptDetailModal } from './PromptDetailModal';
+import { Copy, Heart, Check, Eye } from 'lucide-react';
 import './PromptCard.css';
 
 interface PromptCardProps {
@@ -26,57 +30,42 @@ export const PromptCard = ({
     isSelected = false,
     onToggleSelect,
 }: PromptCardProps) => {
-    const navigate = useNavigate();
-    // Stats state removed as unused
-    // const [stats, setStats] = useState<UsageStats>(...);
+    // navigate unused
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     // Assign color based on prompt id hash for consistency
     const colorIndex = prompt.id.charCodeAt(0) % colorVariants.length;
     const colorVariant = colorVariants[colorIndex];
 
-    /*
-    useEffect(() => {
-        const loadStats = async () => {
-            const data = await indexedDbService.getUsageStats(prompt.id);
-            setStats(data);
-        };
-        loadStats();
-    }, [prompt.id, isCopied]);
-    */
-
     const handleCopy = async (e: React.MouseEvent) => {
         e.stopPropagation();
         onCopy(prompt);
         await indexedDbService.recordUsage(prompt.id, 'copy');
-        // const newStats = await indexedDbService.getUsageStats(prompt.id);
-        // setStats(newStats);
     };
 
     const handleCardClick = (e: React.MouseEvent) => {
-        if ((e.ctrlKey || e.metaKey) && onToggleSelect) {
+        // If selecting, don't open modal
+        if (onToggleSelect && (e.ctrlKey || e.metaKey)) {
             e.preventDefault();
             onToggleSelect(prompt.id);
+            return;
         }
+
+        // Default: Open Modal instead of navigating? 
+        // User asked for "larger card", so Modal is perfect.
+        setIsModalOpen(true);
     };
 
     const handleKeyDown = (e: React.KeyboardEvent) => {
         if (e.key === 'Enter' || e.key === ' ') {
             e.preventDefault();
-            navigate(`/prompt/${prompt.id}`);
-        }
-        if (e.key === 'c' && (e.ctrlKey || e.metaKey)) {
-            e.preventDefault();
-            onCopy(prompt);
+            setIsModalOpen(true);
         }
     };
 
-    // Get category from tags
-    const primaryCategory = Array.isArray(prompt.tags) && prompt.tags.length > 0
-        ? prompt.tags[0]
-        : 'GENERAL';
-    const secondaryCategory = Array.isArray(prompt.tags) && prompt.tags.length > 1
-        ? prompt.tags[1]
-        : null;
+    // Get category from tags or infer from ID/Content if missing
+    // For PromptIcon, we pass the first tag or 'General'
+    const promptType = (prompt.tags && prompt.tags.length > 0) ? prompt.tags[0] : 'General';
 
     // Truncate content for preview
     const contentPreview = prompt.content.length > 150
@@ -84,71 +73,96 @@ export const PromptCard = ({
         : prompt.content;
 
     return (
-        <article
-            className={`prompt-card prompt-card--${colorVariant} ${isSelected ? 'prompt-card--selected' : ''}`}
-            onClick={handleCardClick}
-            onKeyDown={handleKeyDown}
-            tabIndex={0}
-            role="article"
-            aria-label={`Prompt: ${prompt.title}`}
-        >
-            {/* Header with Category Pills */}
-            <header className="prompt-card__header">
-                <div className="prompt-card__categories">
-                    <span className="prompt-card__category prompt-card__category--primary">
-                        {primaryCategory.toUpperCase()}
-                    </span>
-                    {secondaryCategory && (
-                        <span className="prompt-card__category prompt-card__category--secondary">
-                            {secondaryCategory.toUpperCase()}
-                        </span>
-                    )}
+        <>
+            <article
+                className={`prompt-card prompt-card--${colorVariant} ${isSelected ? 'prompt-card--selected' : ''}`}
+                onClick={handleCardClick}
+                onKeyDown={handleKeyDown}
+                tabIndex={0}
+                role="article"
+                aria-label={`Prompt: ${prompt.title}`}
+            >
+                {/* Header with Icon */}
+                <header className="prompt-card__header">
+                    <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+                        <PromptIcon type={promptType} size="sm" />
+                        <div className="prompt-card__categories">
+                            {prompt.is_public && (
+                                <span className="prompt-card__category prompt-card__category--public">
+                                    PUBLIC
+                                </span>
+                            )}
+                            {prompt.tags && prompt.tags.slice(0, 2).map(tag => (
+                                <span key={tag} className="prompt-card__category prompt-card__category--primary">
+                                    {tag.toUpperCase()}
+                                </span>
+                            ))}
+                        </div>
+                    </div>
+                </header>
+
+                {/* Title */}
+                <h3 className="prompt-card__title">{prompt.title}</h3>
+
+                {/* Preview Text */}
+                <div className="prompt-card__preview">
+                    <p className="prompt-card__preview-text">{contentPreview}</p>
                 </div>
-            </header>
 
-            {/* Title */}
-            <h3 className="prompt-card__title">{prompt.title}</h3>
+                {/* Footer with Actions */}
+                <footer className="prompt-card__footer">
+                    <div className="prompt-card__actions">
+                        {/* View Button */}
+                        <Tooltip content="View Details">
+                            <button
+                                className="prompt-card__action"
+                                onClick={(e) => { e.stopPropagation(); setIsModalOpen(true); }}
+                            >
+                                <Eye size={16} />
+                            </button>
+                        </Tooltip>
 
-            {/* Preview Text */}
-            <div className="prompt-card__preview">
-                <p className="prompt-card__preview-text">{contentPreview}</p>
-            </div>
+                        {/* Favorite Button */}
+                        <Tooltip content={prompt.favorite ? "Unfavorite" : "Favorite"}>
+                            <button
+                                className={`prompt-card__action prompt-card__action--favorite ${prompt.favorite ? 'active' : ''}`}
+                                onClick={(e) => { e.stopPropagation(); onToggleFavorite(prompt.id); }}
+                            >
+                                <Heart size={16} fill={prompt.favorite ? "currentColor" : "none"} />
+                            </button>
+                        </Tooltip>
 
-            {/* Footer with Actions */}
-            <footer className="prompt-card__footer">
-                <div className="prompt-card__actions">
-                    {/* Favorite / Heart Button */}
-                    <button
-                        className={`prompt-card__action prompt-card__action--favorite ${prompt.favorite ? 'active' : ''}`}
-                        onClick={(e) => { e.stopPropagation(); onToggleFavorite(prompt.id); }}
-                        aria-label={prompt.favorite ? 'Remove from favorites' : 'Add to favorites'}
-                        title="Toggle Favorite"
-                    >
-                        <svg viewBox="0 0 24 24" fill={prompt.favorite ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="2">
-                            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
-                        </svg>
-                    </button>
+                        {/* Copy Button */}
+                        <Tooltip content={isCopied ? "Copied!" : "Copy"}>
+                            <button
+                                className={`prompt-card__action prompt-card__action--copy ${isCopied ? 'success' : ''}`}
+                                onClick={handleCopy}
+                            >
+                                {isCopied ? <Check size={16} /> : <Copy size={16} />}
+                            </button>
+                        </Tooltip>
+                    </div>
+                </footer>
+            </article>
 
-                    {/* Copy Button */}
-                    <button
-                        className={`prompt-card__action prompt-card__action--copy ${isCopied ? 'success' : ''}`}
-                        onClick={handleCopy}
-                        aria-label={isCopied ? 'Copied!' : 'Copy prompt'}
-                        title="Copy to Clipboard"
-                    >
-                        {isCopied ? (
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                <polyline points="20 6 9 17 4 12" />
-                            </svg>
-                        ) : (
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                <rect x="9" y="9" width="13" height="13" rx="2" />
-                                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
-                            </svg>
-                        )}
-                    </button>
-                </div>
-            </footer>
-        </article>
+            <PromptDetailModal
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+                prompt={{
+                    ...prompt,
+                    // Adapting Prompt (local) to PublicPrompt (modal expects)
+                    // We add missing fields with defaults
+                    type: promptType as any,
+                    model: 'GPT', // Default for local
+                    rating: 0,
+                    rating_count: 0,
+                    fork_count: 0,
+                    tokens: prompt.content.split(' ').length,
+                    preview: prompt.content.substring(0, 100),
+                    author_name: 'You',
+                    is_featured: false
+                }}
+            />
+        </>
     );
 };

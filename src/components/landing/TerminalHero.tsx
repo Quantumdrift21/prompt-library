@@ -9,19 +9,19 @@ const SAMPLE_PROMPTS = [
     {
         input: 'Refactor this React component to use Hooks and remove class syntax...',
         output: 'const Counter = () => {\n  const [count, setCount] = useState(0);\n  return <button onClick={() => setCount(c => c + 1)}>{count}</button>;\n};',
-        model: 'GPT-4',
+        model: 'GPT',
         category: 'Coding',
     },
     {
         input: 'Rewrite this email to sound professional yet firm about the deadline...',
         output: 'Dear Team,\n\nI wanted to follow up regarding the Q4 deliverables. The deadline of January 15th remains firm, and I trust we can align on the remaining tasks by EOD Friday.',
-        model: 'Claude 3.5',
+        model: 'Claude',
         category: 'Writing',
     },
     {
         input: 'Extract structured JSON from this unstructured customer feedback...',
         output: '{\n  "sentiment": "positive",\n  "topics": ["delivery", "packaging"],\n  "rating": 4.5,\n  "actionable": true\n}',
-        model: 'GPT-4',
+        model: 'GPT',
         category: 'Data',
     },
 ];

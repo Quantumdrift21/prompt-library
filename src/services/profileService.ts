@@ -27,7 +27,10 @@ export const uploadAvatar = async (file: File): Promise<string | null> => {
     validateFile(file);
 
     // 2. Get authenticated user
-    const { data, error: authError } = await supabase!.auth.getUser();
+    if (!supabase) {
+        throw new Error('Supabase client not initialized');
+    }
+    const { data, error: authError } = await supabase.auth.getUser();
     const user = data?.user;
 
     if (authError || !user) {
@@ -40,7 +43,7 @@ export const uploadAvatar = async (file: File): Promise<string | null> => {
 
     // 3. Upload to Storage
     console.log('uploadAvatar: Uploading to storage...', fileName);
-    const { error: uploadError } = await supabase!.storage
+    const { error: uploadError } = await supabase.storage
         .from('avatars')
         .upload(fileName, file, { upsert: true });
 
@@ -50,7 +53,7 @@ export const uploadAvatar = async (file: File): Promise<string | null> => {
     }
 
     // 4. Get Public URL
-    const { data: urlData } = supabase!.storage
+    const { data: urlData } = supabase.storage
         .from('avatars')
         .getPublicUrl(fileName);
 
@@ -63,7 +66,7 @@ export const uploadAvatar = async (file: File): Promise<string | null> => {
     }
 
     // 5. Update user metadata with avatar_url (not profiles table)
-    const { error: updateError } = await supabase!.auth.updateUser({
+    const { error: updateError } = await supabase.auth.updateUser({
         data: { avatar_url: publicUrl }
     });
 

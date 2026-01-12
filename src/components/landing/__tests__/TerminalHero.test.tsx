@@ -8,7 +8,7 @@ describe('TerminalHero', () => {
         // Check for terminal prompt symbol
         expect(screen.getByText('$')).toBeInTheDocument();
         // Check for model badge
-        expect(screen.getByText('GPT-4')).toBeInTheDocument();
+        expect(screen.getByText('GPT')).toBeInTheDocument();
     });
 
     test('renders navigation controls', () => {

@@ -17,11 +17,17 @@
 
 .discovery-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    grid-template-columns: repeat(3, 1fr);
     gap: 1.5rem;
-    max-width: 1200px;
+    max-width: 1400px;
     margin: 2rem auto 0;
     padding: 0 1rem;
+}
+
+@media (max-width: 1200px) {
+    .discovery-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
 }
 
 /* Prompt Card */
@@ -94,10 +100,17 @@
 }
 
 /* Card Header */
-.card-header {
+.card-header-row {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+}
+
+.card-header-content {
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
+    gap: 0.5rem;
+    flex: 1;
 }
 
 .card-title {
@@ -293,4 +306,59 @@
     .card-stats {
         gap: 0.75rem;
     }
+}
+
+/* ========================================
+   Loading & Empty States
+   ======================================== */
+
+/* Skeleton Loading Cards */
+.prompt-card-skeleton {
+    background: rgba(30, 30, 50, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    height: 300px;
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        opacity: 0.4;
+        background: rgba(30, 30, 50, 0.6);
+    }
+
+    50% {
+        opacity: 0.7;
+        background: rgba(40, 40, 60, 0.7);
+    }
+}
+
+/* Loading Grid State */
+.discovery-grid--loading {
+    pointer-events: none;
+}
+
+/* Empty State */
+.discovery-empty {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem 2rem;
+    text-align: center;
+}
+
+.discovery-empty__icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    opacity: 0.6;
+}
+
+.discovery-empty p {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 1rem;
+    margin: 0;
 }

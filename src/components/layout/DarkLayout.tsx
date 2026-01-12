@@ -1,11 +1,14 @@
 import type { ReactNode } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { LogOut } from 'lucide-react';
+import { PromptLibraryLogo } from '../common';
 import './DarkLayout.css';
 
 interface DarkLayoutProps {
     children: ReactNode;
     title?: string;
     userName?: string;
+    onLogout?: () => void;
 }
 
 /**
@@ -19,9 +22,10 @@ interface DarkLayoutProps {
  * @param children - Page content to render.
  * @param title - Optional page title for the header.
  * @param userName - Optional username for display.
+ * @param onLogout - Optional callback for logout action.
  * @returns The DarkLayout wrapper JSX element.
  */
-export const DarkLayout = ({ children, title, userName = 'Guest' }: DarkLayoutProps) => {
+export const DarkLayout = ({ children, title, userName = 'Guest', onLogout }: DarkLayoutProps) => {
     const location = useLocation();
 
     const isActive = (path: string) => location.pathname === path;
@@ -30,41 +34,50 @@ export const DarkLayout = ({ children, title, userName = 'Guest' }: DarkLayoutPr
         <div className="dark-layout">
             {/* Navigation */}
             <nav className="dark-nav">
-                <Link to="/landing" className="dark-nav__logo">Prompt Library</Link>
+                <Link to="/home" className="group">
+                    <PromptLibraryLogo size="small" />
+                </Link>
                 <div className="dark-nav__links">
                     <Link
-                        to="/"
-                        className={`dark-nav__link ${isActive('/') ? 'dark-nav__link--active' : ''}`}
+                        to="/home"
+                        className={`dark-nav__link ${isActive('/home') ? 'dark-nav__link--active' : ''}`}
                     >
                         Home
                     </Link>
                     <Link
-                        to="/landing"
-                        className={`dark-nav__link ${isActive('/landing') ? 'dark-nav__link--active' : ''}`}
+                        to="/library"
+                        className={`dark-nav__link ${isActive('/library') ? 'dark-nav__link--active' : ''}`}
                     >
-                        Gallery
+                        Library
+                    </Link>
+
+                    <Link
+                        to="/learn"
+                        className={`dark-nav__link ${isActive('/learn') ? 'dark-nav__link--active' : ''}`}
+                    >
+                        Learn
                     </Link>
                     <Link
-                        to="/collections"
-                        className={`dark-nav__link ${isActive('/collections') ? 'dark-nav__link--active' : ''}`}
+                        to="/settings"
+                        className={`dark-nav__link ${isActive('/settings') ? 'dark-nav__link--active' : ''}`}
                     >
-                        Collections
-                    </Link>
-                    <Link
-                        to="/analytics"
-                        className={`dark-nav__link ${isActive('/analytics') ? 'dark-nav__link--active' : ''}`}
-                    >
-                        Analytics
+                        Settings
                     </Link>
                 </div>
                 <div className="dark-nav__actions">
-                    <Link to="/profile" className="dark-nav__user">
+                    <Link to="/settings" className="dark-nav__user">
                         <span className="dark-nav__avatar">{userName.charAt(0).toUpperCase()}</span>
                         <span className="dark-nav__username">{userName}</span>
                     </Link>
-                    <Link to="/settings" className="dark-nav__settings" title="Settings">
-                        ⚙️
-                    </Link>
+                    {onLogout && (
+                        <button
+                            className="dark-nav__logout"
+                            onClick={onLogout}
+                            aria-label="Logout"
+                        >
+                            <LogOut size={18} className="icon-3d icon-3d-orange" />
+                        </button>
+                    )}
                 </div>
             </nav>
 
@@ -94,3 +107,4 @@ export const DarkLayout = ({ children, title, userName = 'Guest' }: DarkLayoutPr
         </div>
     );
 };
+

@@ -209,26 +209,45 @@ export default function AccountSection() {
                             onChange={handleFileUpload}
                             disabled={uploading}
                         />
-                        <label
-                            htmlFor="avatar-upload"
-                            style={{
-                                display: 'inline-block',
-                                padding: '0.5rem 1rem',
-                                border: '1px solid var(--color-border)',
-                                borderRadius: '6px',
-                                background: 'transparent',
-                                color: 'var(--color-text)',
-                                cursor: 'pointer',
-                                fontSize: '0.9rem',
-                                fontWeight: 500,
-                                marginBottom: '0.5rem',
-                                transition: 'all 0.2s'
-                            }}
-                            onMouseOver={(e) => e.currentTarget.style.background = 'var(--color-surface-hover)'}
-                            onMouseOut={(e) => e.currentTarget.style.background = 'transparent'}
-                        >
-                            {uploading ? 'Uploading...' : 'Upload New Picture'}
-                        </label>
+                        <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.5rem' }}>
+                            <label
+                                htmlFor="avatar-upload"
+                                style={{
+                                    display: 'inline-block',
+                                    padding: '0.5rem 1rem',
+                                    border: '1px solid var(--color-border)',
+                                    borderRadius: '6px',
+                                    background: 'transparent',
+                                    color: 'var(--color-text)',
+                                    cursor: 'pointer',
+                                    fontSize: '0.9rem',
+                                    fontWeight: 500,
+                                    transition: 'all 0.2s'
+                                }}
+                                onMouseOver={(e) => e.currentTarget.style.background = 'var(--color-surface-hover)'}
+                                onMouseOut={(e) => e.currentTarget.style.background = 'transparent'}
+                            >
+                                {uploading ? 'Uploading...' : 'Upload New Picture'}
+                            </label>
+                            {avatarUrl && (
+                                <button
+                                    onClick={() => setAvatarUrl(null)}
+                                    style={{
+                                        padding: '0.5rem 1rem',
+                                        border: '1px solid rgba(239, 68, 68, 0.3)',
+                                        borderRadius: '6px',
+                                        background: 'rgba(239, 68, 68, 0.1)',
+                                        color: '#f87171',
+                                        cursor: 'pointer',
+                                        fontSize: '0.9rem',
+                                        fontWeight: 500,
+                                        transition: 'all 0.2s'
+                                    }}
+                                >
+                                    Remove Picture
+                                </button>
+                            )}
+                        </div>
                         <p style={{ color: 'var(--color-text-muted)', fontSize: '0.8rem', margin: 0 }}>
                             JPG, GIF or PNG. Max size 2MB. 500x500px recommended.
                         </p>

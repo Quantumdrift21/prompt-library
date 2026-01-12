@@ -1,0 +1,126 @@
+.learn-page {
+    height: calc(100vh - 80px);
+    /* Adjust based on navbar */
+    overflow: hidden;
+    padding: 1.5rem 2rem;
+    max-width: 1920px;
+    /* Allow wider screens */
+    margin: 0 auto;
+    width: 100%;
+}
+
+.learn-container {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.learn-header {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    animation: slideDown 0.5s ease-out;
+}
+
+.learn-header h1 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin: 0;
+    background: linear-gradient(135deg, #fff 0%, #a5f3fc 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    display: flex;
+    align-items: center;
+}
+
+.learn-grid {
+    display: grid;
+    /* Sidebar | Builder (Wide) | Notes */
+    grid-template-columns: 280px minmax(450px, 1.2fr) 1fr;
+    gap: 1.5rem;
+    height: 100%;
+    min-height: 0;
+    /* Important for scrollable children in grid */
+}
+
+/* Sections */
+.method-sidebar,
+.builder-section,
+.notes-section {
+    height: 100%;
+    overflow: hidden;
+    /* Prevent spillover */
+    display: flex;
+    flex-direction: column;
+}
+
+/* Scrollable areas inside components */
+.method-description,
+.cognitive-builder,
+.active-notes {
+    height: 100%;
+    overflow-y: auto;
+    /* Glass styling integration */
+    background: rgba(30, 30, 46, 0.6);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    /* Unified styling */
+    border-radius: 20px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* Enhance shadows/glow on hover for interactive sections */
+.builder-section:hover .cognitive-builder {
+    border-color: rgba(255, 255, 255, 0.15);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+}
+
+.notes-section:hover .active-notes {
+    border-color: rgba(255, 255, 255, 0.15);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 1200px) {
+    .learn-grid {
+        grid-template-columns: 250px 1fr 1fr;
+    }
+}
+
+@media (max-width: 900px) {
+    .learn-page {
+        height: auto;
+        overflow-y: auto;
+    }
+
+    .learn-grid {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto auto;
+        height: auto;
+    }
+
+    .method-sidebar {
+        order: 2;
+        /* Put sidebar below builder on mobile? Or first? */
+    }
+
+    .method-description,
+    .cognitive-builder,
+    .active-notes {
+        height: 500px;
+        /* Fixed height for mobile scroll */
+    }
+}

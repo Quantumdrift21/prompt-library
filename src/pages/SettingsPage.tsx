@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+
 import { useAuth } from '../hooks';
 import AccountSection from '../components/settings/AccountSection';
 import PreferencesSection from '../components/settings/PreferencesSection';
@@ -66,11 +66,7 @@ const ToolIcon = () => (
     </svg>
 );
 
-const ArrowLeftIcon = () => (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="16" height="16">
-        <path d="M19 12H5M12 19l-7-7 7-7" />
-    </svg>
-);
+
 
 const categories: CategoryConfig[] = [
     { id: 'Account', label: 'Account', sublabel: 'Profile & Email', icon: <UserIcon /> },
@@ -124,15 +120,6 @@ export default function SettingsPage() {
 
     return (
         <div className="settings-page">
-            {/* Navigation Bar */}
-            <nav className="settings-nav-bar">
-                <Link to="/home" className="settings-nav-bar__logo">Prompt Library</Link>
-                <Link to="/home" className="settings-nav-bar__back">
-                    <ArrowLeftIcon />
-                    Back to Dashboard
-                </Link>
-            </nav>
-
             <div className="settings-container">
                 <h1 className="settings-title">Settings</h1>
 

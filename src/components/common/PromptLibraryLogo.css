@@ -1,0 +1,82 @@
+/* Tech/Code Logo Styles - Theme aware */
+
+.logo-tech-container {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(20, 20, 34, 0.6);
+    /* Slightly darker/themed bg */
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    /* Slightly rounder */
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 600;
+    backdrop-filter: blur(8px);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2),
+        0 2px 4px -1px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    user-select: none;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    padding: 0.75rem 3rem !important;
+    /* Force extra horizontal padding as requested */
+}
+
+.logo-tech-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg,
+            transparent 0%,
+            rgba(255, 107, 53, 0.5) 25%,
+            rgba(0, 212, 255, 0.5) 75%,
+            transparent 100%);
+    opacity: 0.5;
+}
+
+.logo-tech-container:hover {
+    border-color: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+    transform: translateY(-2px);
+    background: rgba(20, 20, 34, 0.8);
+}
+
+.logo-tech-text {
+    letter-spacing: -0.02em;
+    z-index: 1;
+}
+
+.text-orange {
+    color: #ff6b35;
+    text-shadow: 0 0 10px rgba(255, 107, 53, 0.2);
+}
+
+.text-teal {
+    color: #00d4ff;
+    text-shadow: 0 0 10px rgba(0, 212, 255, 0.2);
+}
+
+.logo-tech-cursor {
+    display: inline-block;
+    color: #00d4ff;
+    /* Match one of the theme colors */
+    margin-left: 1px;
+    animation: blink-cursor 1s step-end infinite;
+    font-weight: 700;
+}
+
+@keyframes blink-cursor {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0;
+    }
+}
