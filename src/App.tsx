@@ -9,6 +9,7 @@ import SettingsPage from './pages/SettingsPage';
 import { LandingPage } from './pages/LandingPage';
 import { Onboarding } from './pages/Onboarding';
 import { DashboardHome } from './pages/DashboardHome';
+import { LearnPage } from './pages/LearnPage';
 import { indexedDbService } from './services/indexedDb';
 import { syncService } from './services/syncService';
 import { authService } from './services/authService';
@@ -308,6 +309,12 @@ function App() {
       <Route path="/settings" element={
         <ProtectedRoute>
           <SettingsPage />
+        </ProtectedRoute>
+      } />
+
+      <Route path="/learn" element={
+        <ProtectedRoute>
+          <LearnPage />
         </ProtectedRoute>
       } />
 

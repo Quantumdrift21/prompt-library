@@ -277,6 +277,15 @@
     box-shadow: 0 0 15px rgba(255, 107, 53, 0.1);
 }
 
+.sidebar-link--active {
+    background: rgba(0, 212, 255, 0.15);
+    border-left: 3px solid var(--color-accent-teal);
+}
+
+.sidebar-link--active .sidebar-label {
+    color: var(--color-accent-teal);
+}
+
 .sidebar-icon {
     font-size: 1.1rem;
     min-width: 18px;
@@ -527,6 +536,28 @@
     color: var(--color-text-muted);
     font-style: italic;
     font-size: 0.9rem;
+}
+
+.insight-empty-state {
+    text-align: center;
+    padding: 1rem;
+}
+
+.empty-cta {
+    margin-top: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: linear-gradient(135deg, var(--color-accent-orange), var(--color-accent-pink, #ff6b9d));
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.empty-cta:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 107, 53, 0.4);
 }
 
 /* --- Recent Prompts List --- */

@@ -1,10 +1,10 @@
 import { useState, useEffect, useMemo } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../hooks';
 import { indexedDbService } from '../services/indexedDb';
 import { learningService } from '../services/learningService';
 import type { Prompt } from '../types';
-import { Hand, Grid, Star, FolderClosed, Sparkles, Book, Gamepad2, Trophy, Flame, Search, Settings } from 'lucide-react';
+import { Hand, Grid, Star, FolderClosed, Sparkles, Gamepad2, Trophy, Flame, Search, Settings, Home, Library } from 'lucide-react';
 import './DashboardHome.css';
 
 /**
@@ -13,6 +13,8 @@ import './DashboardHome.css';
  */
 export const DashboardHome = () => {
     const navigate = useNavigate();
+    const location = useLocation();
+    const isActive = (path: string) => location.pathname === path;
     const { user } = useAuth();
     const [recentPrompts, setRecentPrompts] = useState<Prompt[]>([]);
     const [prompts, setPrompts] = useState<Prompt[]>([]);
@@ -194,13 +196,25 @@ export const DashboardHome = () => {
                         <Sparkles size={18} className="sidebar-icon icon-3d icon-3d-orange" />
                         <span className="sidebar-label">Create New</span>
                     </button>
-                    <Link to="/library" className="sidebar-link">
-                        <Book size={18} className="sidebar-icon icon-3d icon-3d-cyan" />
+                    <Link to="/home" className={`sidebar-link ${isActive('/home') ? 'sidebar-link--active' : ''}`}>
+                        <Home size={18} className="sidebar-icon icon-3d icon-3d-cyan" />
+                        <span className="sidebar-label">Home</span>
+                    </Link>
+                    <Link to="/library" className={`sidebar-link ${isActive('/library') ? 'sidebar-link--active' : ''}`}>
+                        <Library size={18} className="sidebar-icon icon-3d icon-3d-cyan" />
                         <span className="sidebar-label">Library</span>
                     </Link>
-                    <Link to="/collections" className="sidebar-link">
+                    <Link to="/collections" className={`sidebar-link ${isActive('/collections') ? 'sidebar-link--active' : ''}`}>
                         <FolderClosed size={18} className="sidebar-icon icon-3d icon-3d-purple" />
                         <span className="sidebar-label">Collections</span>
+                    </Link>
+                    <Link to="/learn" className={`sidebar-link ${isActive('/learn') ? 'sidebar-link--active' : ''}`}>
+                        <Gamepad2 size={18} className="sidebar-icon icon-3d icon-3d-pink" />
+                        <span className="sidebar-label">Learn</span>
+                    </Link>
+                    <Link to="/settings" className={`sidebar-link ${isActive('/settings') ? 'sidebar-link--active' : ''}`}>
+                        <Settings size={18} className="sidebar-icon icon-3d icon-3d-green" />
+                        <span className="sidebar-label">Settings</span>
                     </Link>
                 </nav>
             </aside>
@@ -287,7 +301,12 @@ export const DashboardHome = () => {
                                     ))}
                                 </ul>
                             ) : (
-                                <p className="insight-empty">No prompts yet</p>
+                                <div className="insight-empty-state">
+                                    <p className="insight-empty">No prompts yet</p>
+                                    <button className="empty-cta" onClick={handleCreatePrompt}>
+                                        Create your first prompt →
+                                    </button>
+                                </div>
                             )}
                         </div>
                     </div>
@@ -299,19 +318,19 @@ export const DashboardHome = () => {
                         </div>
                         <div className="insight-card-content stats-grid">
                             <div className="stat-mini">
-                                <span className="stat-mini-value">{stats.totalPrompts}</span>
+                                <span className="stat-mini-value">{stats.totalPrompts || '—'}</span>
                                 <span className="stat-mini-label">Total</span>
                             </div>
                             <div className="stat-mini">
-                                <span className="stat-mini-value">{stats.favorites}</span>
+                                <span className="stat-mini-value">{stats.favorites || '—'}</span>
                                 <span className="stat-mini-label">Favorites</span>
                             </div>
                             <div className="stat-mini">
-                                <span className="stat-mini-value">{stats.totalCollections}</span>
+                                <span className="stat-mini-value">{stats.totalCollections || '—'}</span>
                                 <span className="stat-mini-label">Collections</span>
                             </div>
                             <div className="stat-mini">
-                                <span className="stat-mini-value">{activityData.reduce((sum, d) => sum + d.count, 0)}</span>
+                                <span className="stat-mini-value">{activityData.reduce((sum, d) => sum + d.count, 0) || '—'}</span>
                                 <span className="stat-mini-label">This Week</span>
                             </div>
                         </div>

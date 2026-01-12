@@ -33,6 +33,8 @@ export const Collections = () => {
     const [selectedTags, setSelectedTags] = useState<string[]>([]);
     const [page, setPage] = useState(1);
     const [hasMore, setHasMore] = useState(true);
+    const [tagsExpanded, setTagsExpanded] = useState(false);
+    const VISIBLE_TAGS_COUNT = 8;
 
     const { copiedId, copyPrompt } = useCopy();
 
@@ -239,7 +241,7 @@ export const Collections = () => {
 
                         {isDiscoverMode && availableTags.length > 0 && (
                             <div className="discover-tags-scroll">
-                                {availableTags.map(tag => (
+                                {(tagsExpanded ? availableTags : availableTags.slice(0, VISIBLE_TAGS_COUNT)).map(tag => (
                                     <button
                                         key={tag}
                                         className={`discover-tag-chip ${selectedTags.includes(tag) ? 'active' : ''}`}
@@ -248,6 +250,14 @@ export const Collections = () => {
                                         #{tag}
                                     </button>
                                 ))}
+                                {availableTags.length > VISIBLE_TAGS_COUNT && (
+                                    <button
+                                        className="tags-toggle"
+                                        onClick={() => setTagsExpanded(!tagsExpanded)}
+                                    >
+                                        {tagsExpanded ? 'Show Less' : `+${availableTags.length - VISIBLE_TAGS_COUNT} more`}
+                                    </button>
+                                )}
                             </div>
                         )}
                     </div>

@@ -169,6 +169,22 @@
     box-shadow: 0 0 10px rgba(56, 189, 248, 0.15);
 }
 
+.tags-toggle {
+    background: none;
+    border: none;
+    color: var(--color-accent-teal, #00d4ff);
+    font-size: 0.8rem;
+    cursor: pointer;
+    padding: 6px 12px;
+    white-space: nowrap;
+    transition: color 0.2s;
+}
+
+.tags-toggle:hover {
+    text-decoration: underline;
+    color: var(--color-accent-cyan, #38bdf8);
+}
+
 .collections-content {
     flex: 1;
     min-height: 0;
