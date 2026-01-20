@@ -4,6 +4,7 @@ import { CognitiveBuilder } from '../components/study/CognitiveBuilder';
 import { ActiveNotes } from '../components/study/ActiveNotes';
 import type { StudySessionData, StudyMethod } from '../types/study';
 import { MethodSidebar } from '../components/study/MethodSidebar';
+import { ResourceRadar } from '../components/study/ResourceRadar';
 import { DarkLayout } from '../components/layout';
 import { useAuth } from '../hooks';
 import './LearnPage.css';
@@ -54,6 +55,7 @@ export const LearnPage = () => {
                         {/* Left: Method Context */}
                         <aside className="method-sidebar">
                             <MethodSidebar method={currentMethod} />
+                            <ResourceRadar topic={sessionData?.topic || ''} />
                         </aside>
 
                         {/* Middle: Inputs */}
