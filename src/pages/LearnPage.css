@@ -7,6 +7,10 @@
     /* Allow wider screens */
     margin: 0 auto;
     width: 100%;
+    /* Dark theme styling */
+    background: linear-gradient(135deg, var(--color-bg-dark, #0f0f1a) 0%, var(--color-bg-darker, #0a0a12) 100%);
+    color: var(--color-text-white, #fff);
+    min-height: 100vh;
 }
 
 .learn-container {
@@ -27,11 +31,14 @@
     font-size: 1.75rem;
     font-weight: 700;
     margin: 0;
-    background: linear-gradient(135deg, #fff 0%, #a5f3fc 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
     display: flex;
     align-items: center;
+    color: #fff;
+}
+
+.learn-header h1 svg {
+    color: var(--color-accent-teal, #00d4ff);
+    flex-shrink: 0;
 }
 
 .learn-grid {

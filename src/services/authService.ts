@@ -125,19 +125,19 @@ class AuthService {
     async deleteAccount(): Promise<{ error: Error | null }> {
         if (!supabase) return { error: null };
 
-        // Note: Client-side deletion often requires specific RLS or RPC setup.
-        // Assuming a Supabase RPC function 'delete_user' exists or handling via edge case.
-        // For standard setup, users often can't delete themselves without server-side code.
-        // We will try a standard RPC call if it existed, otherwise return an error for now
-        // to prompt "Contact Support" behavior or similar.
+        // Account deletion requires server-side implementation for security.
+        // This prevents malicious client-side deletion attempts.
+        // To implement: Create a Supabase Edge Function 'delete-account' that:
+        // 1. Verifies the user's identity
+        // 2. Deletes associated data (prompts, settings, storage files)
+        // 3. Deletes the auth user
 
-        try {
-            // Placeholder: Most setups don't allow straight client-side deletion for security.
-            // We would call: await supabase.rpc('delete_own_account');
-            return { error: new Error("Self-deletion requires server configuration.") };
-        } catch (e) {
-            return { error: e as Error };
-        }
+        return {
+            error: new Error(
+                "Account deletion is not available from the app. " +
+                "Please contact support at support@example.com to request account deletion."
+            )
+        };
     }
 
     /**

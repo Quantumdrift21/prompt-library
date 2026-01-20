@@ -277,11 +277,41 @@ body {
   filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.4));
 }
 
+/* Header Icon Wrapper - creates background box for icons */
+.header-icon-wrapper {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  margin-right: 12px;
+  flex-shrink: 0;
+}
+
+.header-icon-wrapper.icon-3d-cyan {
+  background: rgba(0, 210, 255, 0.15);
+  border: 1px solid rgba(0, 210, 255, 0.3);
+  color: #00d2ff;
+}
+
+.header-icon-wrapper.icon-3d-purple {
+  background: rgba(159, 122, 234, 0.15);
+  border: 1px solid rgba(159, 122, 234, 0.3);
+  color: #9f7aea;
+}
+
+.header-icon-wrapper.icon-3d-orange {
+  background: rgba(255, 107, 53, 0.15);
+  border: 1px solid rgba(255, 107, 53, 0.3);
+  color: #ff6b35;
+}
+
 /* Gradient accents for specific icons */
 .icon-3d-cyan {
   color: #00d2ff;
-  stroke: url(#gradient-cyan);
-  /* Requires SVG defs, fallback to color */
+  stroke: currentColor;
+  /* Uses color as stroke - no gradient dependency */
 }
 
 .icon-3d-orange {

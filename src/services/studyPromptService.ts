@@ -1,43 +1,55 @@
 import type { StudySessionData } from '../types/study';
+import { STUDY_TECHNIQUES } from '../data/studyTechniques';
+import { AI_MODELS } from '../data/aiModels';
 
 export const studyPromptService = {
     generateMetaPrompt(data: StudySessionData): string {
-        const { topic, method, goal, knowledgeLevel } = data;
+        const { topic, method, goal, knowledgeLevel, aiModel } = data;
 
-        let instructions = '';
+        // 1. Get the Core Method Data
+        // Default to Feynman if method not found
+        const technique = STUDY_TECHNIQUES[method] || STUDY_TECHNIQUES['Feynman Technique'];
 
-        // Method-specific instructions
-        switch (method) {
-            case 'Feynman':
-                instructions = `Explain the topic "${topic}" as if I am a 12-year-old. Avoid jargon where possible, or explain it simply if necessary. Focus on analogies and simple logic.`;
-                break;
-            case 'Active Recall':
-                instructions = `Do NOT summarize "${topic}". Instead, ask me 5 diagnostic questions to test my understanding. Wait for my answers before providing feedback.`;
-                break;
-            case 'Cornell':
-                instructions = `Provide notes on "${topic}" structured in the Cornell logic: 
-1. Key Cues/Questions (left column equivalent)
-2. Detailed Notes (right column equivalent)
-3. Summary (bottom row equivalent) at the end.`;
-                break;
-            case 'Blurting':
-                instructions = `I will provide my raw thoughts on "${topic}". Please organize them into a logical hierarchy, correct any misconceptions, and fill in missing key gaps.`;
-                break;
-            case 'Leitner':
-                instructions = `Create a set of flashcards for "${topic}". Present them one by one. If I get it wrong, tell me to review it sooner. If I get it right, tell me to review it later.`;
-                break;
-        }
+        // 2. Build the "Context" section for the AI
+        // This injects the scientific nuance from the guide
+        let context = `
+**Study Technique**: ${technique.name}
+**Scientific Basis**: ${technique.scientificContext}
+**Mechanism**: ${technique.mechanism}
 
-        // Goal adjustments
-        if (goal === 'Quiz Me' && method !== 'Active Recall') {
-            instructions += `\n\nAdditionally, include a short quiz at the end.`;
+**Instructions for the AI Tutor**:
+${technique.instructions.replace(/{topic}/g, topic || 'the topic')}
+`;
+
+        // 3. Goal Adjustments (Add specific sub-goals)
+        let goalInstructions = '';
+        if (goal === 'Quiz Me') {
+            goalInstructions = `\n\n**Additional Goal**: Create a quiz to test my understanding after the main activity.`;
         } else if (goal === 'Find Gaps') {
-            instructions += `\n\nFocus specifically on common misconceptions and advanced nuances I might be missing.`;
+            goalInstructions = `\n\n**Additional Goal**: Explicitly identify potential misconceptions or gaps in my understanding.`;
+        } else if (goal === 'Deep Dive') {
+            goalInstructions = `\n\n**Additional Goal**: Provide advanced details and theoretical underpinnings.`;
+        } else if (goal === 'Summarize') {
+            goalInstructions = `\n\n**Additional Goal**: Conclude with a concise one-paragraph summary.`;
         }
+        context += goalInstructions;
 
-        // Knowledge Level adjustments
-        instructions += `\n\nTarget Audience Level: ${knowledgeLevel}.`;
+        // 4. Knowledge Level & Constraints
+        const constraints = `
+- **Target Audience Level**: ${knowledgeLevel}
+- **Tone**: Educational, Encouraging, but rigorously accurate.
+- **Format**: Clear, structured Markdown. Use bolding for key terms.
+`;
 
-        return instructions;
+        // 5. Wrap with AI Model Template
+        const selectedModel = AI_MODELS.find(m => m.id === aiModel) || AI_MODELS[0];
+
+        // Construct the final prompt using the model's template
+        return selectedModel.template(
+            'Expert Tutor and Study Guide', // Role
+            `Help me study "${topic || 'the topic'}" using the ${method} method.`, // Task
+            context.trim(), // Context
+            constraints.trim() // Constraints
+        );
     }
 };

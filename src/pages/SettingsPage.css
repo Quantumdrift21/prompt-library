@@ -411,6 +411,13 @@
     padding-right: 36px;
 }
 
+/* Fix for select dropdown options in dark mode */
+.settings-select option {
+    background: #1e1e32;
+    color: #fff;
+    padding: 0.5rem;
+}
+
 /* ========================================
    Form Labels
    ======================================== */

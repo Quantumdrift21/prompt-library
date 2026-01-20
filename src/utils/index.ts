@@ -25,3 +25,5 @@ export const copyToClipboard = async (text: string): Promise<boolean> => {
         return false;
     }
 };
+
+export { logger } from './logger';

@@ -190,3 +190,111 @@
         text-align: center;
     }
 }
+
+/* ========================================
+   Inside Modal Override
+   Match Premium Glass Theme
+   ======================================== */
+
+.modal-content .prompt-editor {
+    background: transparent;
+    border: none;
+    padding: 0;
+    box-shadow: none;
+}
+
+.modal-content .prompt-editor::before {
+    display: none;
+}
+
+.modal-content .prompt-editor__header {
+    display: none;
+}
+
+/* Labels - ensure full visibility with proper color */
+.modal-content .prompt-editor__field label {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.8rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 10px;
+    display: block;
+}
+
+/* Inputs - premium glass style */
+.modal-content .prompt-editor__field input,
+.modal-content .prompt-editor__field textarea {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    color: #fff;
+    padding: 14px 16px;
+    font-size: 0.95rem;
+}
+
+.modal-content .prompt-editor__field input::placeholder,
+.modal-content .prompt-editor__field textarea::placeholder {
+    color: rgba(255, 255, 255, 0.35);
+}
+
+.modal-content .prompt-editor__field input:focus,
+.modal-content .prompt-editor__field textarea:focus {
+    border-color: var(--color-accent-teal, #00d4ff);
+    box-shadow: 0 0 0 2px rgba(0, 212, 255, 0.15);
+    outline: none;
+}
+
+/* Favorite checkbox - visible label */
+.modal-content .prompt-editor__favorite {
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: 24px;
+}
+
+.modal-content .prompt-editor__favorite span {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+/* Action buttons - centered alignment */
+.modal-content .prompt-editor__actions {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    padding-top: 24px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.modal-content .prompt-editor__cancel {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: rgba(255, 255, 255, 0.9);
+    padding: 12px 28px;
+    border-radius: 12px;
+    font-weight: 500;
+}
+
+.modal-content .prompt-editor__cancel:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.25);
+}
+
+.modal-content .prompt-editor__save {
+    background: linear-gradient(135deg, var(--color-accent-orange, #ff6b35), #ff8f5a);
+    border: none;
+    color: white;
+    padding: 12px 28px;
+    border-radius: 12px;
+    font-weight: 600;
+    box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
+}
+
+.modal-content .prompt-editor__save:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(255, 107, 53, 0.4);
+}
+
+.modal-content .prompt-editor__save:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}

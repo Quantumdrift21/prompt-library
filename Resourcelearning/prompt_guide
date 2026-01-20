@@ -1,0 +1,986 @@
+# Prompt Engineering Playbook for All LLM Models
+**Comprehensive Guide to Crafting Prompts for Every Model Family**
+
+---
+
+## Table of Contents
+1. Cross-Model Fundamentals
+2. OpenAI Models (GPT-5.2, GPT-5.1, GPT-oss-120b)
+3. Anthropic Claude Models
+4. Google Gemini Models
+5. xAI Grok Models
+6. Meta Llama Models
+7. Alibaba Qwen Models
+8. Mistral Models
+9. DeepSeek Models
+10. Cohere Models
+11. Practical Implementation Guide
+
+---
+
+## 0. Cross-Model Prompting Fundamentals
+
+Nearly all modern LLMs perform best when a prompt includes four core elements:
+
+### The Universal Prompt Structure
+
+```
+You are <ROLE>, with <RELEVANT EXPERTISE>.
+Your task: <CLEAR, SPECIFIC TASK>.
+
+Context:
+<BULLET POINTS, DOCUMENTS, CODE, DATA>
+
+Constraints:
+- Output format: <JSON, TABLE, MARKDOWN SECTIONS, ETC.>
+- Style: <CONCISE, ACADEMIC, FORMAL, CASUAL>
+- Safety/Limits: <WHAT TO IGNORE, ETHICAL BOUNDARIES>
+
+Now perform the task: <FINAL QUESTION OR INSTRUCTION>.
+```
+
+### Quick Reference: Model-Specific Quirks
+
+| Model Family | Key Strength | Prompting Quirk | Common Pitfall |
+|--------------|--------------|-----------------|-----------------|
+| **OpenAI GPT-5.x** | Reasoning & code | Loves structured instructions & system prompts | Mixing system/user instructions inconsistently |
+| **Claude 4.x** | Long context & analysis | Responds to detailed system prompts & XML tags | Vague tasks without format specifications |
+| **Gemini 3.x** | Multimodal & huge context | Needs clear structure & explicit separators | Long context without "Based on above..." bridge |
+| **Grok 4.x** | Personality & iteration | Requires tone control & explicit constraints | Letting it ramble in professional contexts |
+| **Llama 4 / 3.1 405B** | Open-weight reliability | Format depends on host (API vs raw) | Wrong chat format headers if using raw model |
+| **Qwen 3 series** | Multilingual & reflective | Standard chat roles with reasoning breaks | Mixing too many meta-instructions |
+| **Mistral Large 3** | Efficiency & clarity | Concise, balanced structure | Over-long unstructured prompts |
+| **DeepSeek-R1** | Deep reasoning | Zero-shot only, no few-shot examples | Adding few-shot or CoT instructions (hurts performance) |
+| **Cohere Command A** | Enterprise & long context | Preamble-based, supports Prompt Tuner | Scattering rules across multiple turns |
+| **Other/Generic** | Baseline reliability | Vanilla chat structure | Assuming hidden behaviors without testing |
+
+---
+
+## 1. OpenAI: GPT-5.2, GPT-5.1, GPT-oss-120b
+
+OpenAI's modern models distinguish between **instructions** (foundational behavior) and **input** (task-specific content).
+
+### Prompting Principles
+
+- **Front-load instructions**: Place role, task, and constraints before long context
+- **Use visual separators**: `###`, `"""`, or XML tags to distinguish sections
+- **Exploit system/instructions channel**: 
+  - System = behavioral rules & persona
+  - User = per-query task & context
+- **Leverage reasoning controls**: Use available reasoning parameters instead of writing "think step by step"
+- **Temperature tuning**: Low (0-0.4) for deterministic tools; higher for creativity
+
+### Generic Template
+
+```
+[SYSTEM]
+You are a senior <ROLE> helping with <DOMAIN>.
+Follow these rules:
+- Always be accurate and explicit about uncertainty
+- Prefer stepwise, structured thinking for non-trivial tasks
+- Use markdown headings only when they add clarity
+
+[USER]
+### Task
+<Clear one-sentence objective>
+
+### Context
+<Documents, bullet points, code>
+
+### Requirements
+- Output format: <JSON with fields...>
+- Constraints: <length, tone, what to exclude>
+
+Now do the task.
+```
+
+### Real-World Example: Code Review
+
+```
+[SYSTEM]
+You are a senior backend engineer who reviews code for:
+- Performance issues
+- Security vulnerabilities  
+- Maintainability and clarity
+- Test coverage gaps
+
+[USER]
+### Task
+Review the following Python function for security issues.
+
+### Code
+```python
+def process_user_input(user_data):
+    query = f"SELECT * FROM users WHERE id = {user_data['id']}"
+    result = db.execute(query)
+    return result
+```
+
+### Requirements
+- List each issue: Risk, Impact, Fix
+- Suggest test cases
+- Rate overall risk: Critical/High/Medium/Low
+
+Now review.
+```
+
+---
+
+## 2. Anthropic: Claude 4 Opus, Claude 4.5 Sonnet, Claude Haiku 4.5
+
+Claude models excel with **long, detailed system prompts**, **XML/markdown structure**, and explicit reasoning instructions.
+
+### Prompting Principles
+
+- **Rich system prompt**: Include persona, allowed sources, forbidden behaviors, formatting expectations
+- **Few-shot examples**: Provide 2-3 examples of desired behavior
+- **Scratchpad / CoT**: Use `<thinking>` tags for internal reasoning
+- **XML tags for clarity**: `<instructions>`, `<context>`, `<task>`, `<output>`
+- **Step-by-step reasoning**: Explicitly ask Claude to "think before answering"
+
+### Claude Prompt Skeleton
+
+```xml
+<system>
+You are Claude, an expert <ROLE> assisting with <DOMAIN>.
+
+Core Rules:
+1. Provide sourced, step-by-step analyses
+2. Use professional yet concise tone
+3. Always obey format and content constraints
+4. For complex problems, use internal <thinking> before final answer
+
+When thinking, first analyze the problem:
+- What are the key components?
+- What assumptions are made?
+- What could go wrong?
+Then provide your final answer in <answer> tags.
+</system>
+
+<user>
+<task>
+<objective>Clear, specific task</objective>
+<constraints>
+- Length: <specification>
+- Style: <specification>
+- Format: Markdown / JSON / Table
+</constraints>
+</task>
+
+<context>
+<information>Relevant text, code, or data</information>
+</context>
+
+<examples>
+<good_example>
+Input: <sample input>
+Output: <desired output>
+</good_example>
+</examples>
+
+Now complete the task.
+</user>
+```
+
+### Real-World Example: Document Analysis
+
+```xml
+<system>
+You are an expert policy analyst with 10 years of experience in regulatory compliance.
+Your task is to identify risks and provide recommendations.
+Always cite specific sections and provide reasoning.
+Use clear, professional language suitable for C-suite executives.
+</system>
+
+<user>
+<task>
+<objective>Analyze this contract for regulatory risks</objective>
+<constraints>
+- Identify top 5 risks ranked by severity
+- For each: Risk Description, Regulatory Reference, Mitigation
+- Format: Markdown with H2 headings
+- Length: 500-800 words
+</constraints>
+</task>
+
+<context>
+[INSERT CONTRACT TEXT HERE]
+</context>
+
+Now analyze for risks.
+</user>
+```
+
+---
+
+## 3. Google DeepMind: Gemini 3 Pro & Gemini 3 Flash
+
+Gemini excels with **clear structure**, **explicit separators**, and **huge context windows**.
+
+### Prompting Principles
+
+- **System instructions at top**: Define persona, voice, and global rules
+- **Structured format**: Use XML tags or markdown headings
+- **Long-context hygiene**: Put all context first, end with "Based on the information above..."
+- **Multimodal clarity**: Explicitly reference images/audio: "Using image_1, explain..."
+- **Explicit verbosity control**: Specify desired level of detail
+
+### Gemini Prompt Skeleton
+
+```
+<system_instruction>
+You are an expert <ROLE> with specialized knowledge in <DOMAIN>.
+
+Constraints:
+- Tone: precise, objective, professional
+- Explain all assumptions
+- Use markdown with H2/H3 headings
+- If information is incomplete, state what's needed
+</system_instruction>
+
+<user>
+
+## Context
+[DOCUMENTS, CODE, DATA, TRANSCRIPTS]
+[IMAGE: description]
+
+## Task
+Based on the information above:
+1. [First instruction]
+2. [Second instruction]
+3. [Third instruction]
+
+If anything is unclear, ask clarifying questions before proceeding.
+
+</user>
+```
+
+### Real-World Example: Data Analysis
+
+```
+<system_instruction>
+You are a data scientist specializing in business analytics.
+Provide clear, actionable insights with supporting evidence.
+Always mention data quality and limitations.
+Use visualizable formats (tables, bullet points) when appropriate.
+</system_instruction>
+
+<user>
+
+## Context
+Sales data for Q4 2025:
+- Total revenue: $2.5M
+- Customer acquisition cost: $150
+- Customer lifetime value: $2,000
+- Churn rate: 5%
+- Top 3 products: A (40%), B (35%), C (20%)
+
+## Task
+Based on the above data:
+1. Identify the top 3 business opportunities
+2. Rank them by potential impact and implementation complexity
+3. Suggest 2-3 specific next steps for each
+
+</user>
+```
+
+---
+
+## 4. xAI: Grok 4 & Grok 4.1
+
+Grok is **opinionated by default**, so controlling tone and structure is critical for professional use.
+
+### Prompting Principles
+
+- **Tame the personality**: Explicitly set tone ("formal and neutral", "no humor")
+- **Define roles tightly**: Narrow persona improves focus
+- **Structure commands explicitly**: Ask for specific formats (tables, sections, bullet points)
+- **Request uncertainty labeling**: Separate "confirmed facts" from "speculative"
+- **Exploit cheap iteration**: Use follow-ups to refine output
+
+### Grok Prompt Skeleton
+
+```
+System:
+You are Grok, acting as a serious, detail-oriented <ROLE>.
+
+Behavioral Rules:
+- No humor or sarcasm unless explicitly requested
+- Separate: "Confirmed facts" vs "Assumptions"
+- Prefer concise, high-density explanations
+- Always cite sources when making claims
+
+User:
+**Task**: <e.g., design, critique, analyze>
+
+**Context**:
+<Relevant information>
+
+**Output Structure**:
+1. Executive Summary (3-5 sentences)
+2. Detailed Analysis with numbered points
+3. Risk/Impact/Mitigation Table
+4. Confirmed Facts vs Assumptions section
+5. Next Steps
+```
+
+### Real-World Example: Competitive Analysis
+
+```
+System:
+You are Grok, acting as a strategic business analyst.
+Be objective and rigorous. Separate confirmed facts from analysis.
+Use data-driven language. Avoid speculation without evidence.
+
+User:
+**Task**: Analyze competitive positioning
+
+**Context**:
+Market: AI coding assistants
+Competitors: GitHub Copilot, Amazon CodeWhisperer, Codeium
+Our product: DeepSeek Code (5M users, $20M ARR)
+
+**Output**:
+1. Market position summary
+2. Competitive feature matrix
+3. Top 3 threats ranked by impact
+4. Top 3 opportunities ranked by achievability
+5. "Confirmed facts" section with specific data
+6. Recommended strategic priorities
+
+Now analyze.
+```
+
+---
+
+## 5. Meta: Llama 4, Llama 3.1 405B
+
+Llama models are **open-weight**, so prompting varies based on whether you use a hosted API or raw model.
+
+### For Hosted APIs (Standard Chat)
+
+Treat like any standard chat LLM: system role + user messages.
+
+```
+System:
+You are a helpful, precise <ROLE>.
+Always:
+- Explain trade-offs
+- Provide code with comments
+- Avoid unsafe or unethical content
+
+User:
+Task: <clear objective>
+
+Context:
+<relevant data>
+
+Requirements:
+<output format, style, constraints>
+
+Now do the task.
+```
+
+### For Raw Llama Models
+
+Follow the exact chat format (varies by version):
+
+**Llama 3.x Format:**
+```
+<|begin_of_text|><|start_header_id|>system<|end_header_id|>
+You are a helpful, precise senior <ROLE>.
+Always explain trade-offs and provide code with comments.
+<|eot_id|><|start_header_id|>user<|end_header_id|>
+Task: [your prompt]
+<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+```
+
+**Llama 2 Format:**
+```
+[INST] <<SYS>>
+You are a helpful assistant.
+<</SYS>>
+
+Your task here.
+[/INST]
+```
+
+### Prompting Principles
+
+- **Respect the format strictly**: Small formatting errors collapse quality
+- **Keep system messages compact**: Open-weight models have smaller context budgets
+- **Trim history**: Remove old turns to save tokens
+- **Few-shot examples**: 1-2 examples improve accuracy
+
+### Real-World Example: Code Generation
+
+```
+<|begin_of_text|><|start_header_id|>system<|end_header_id|>
+You are an expert Python developer. Write clean, production-ready code.
+Include docstrings, type hints, and error handling.
+<|eot_id|><|start_header_id|>user<|end_header_id|>
+Write a function to validate email addresses.
+Requirements:
+- Use regex with RFC 5322 pattern
+- Return (is_valid: bool, error_message: str)
+- Handle edge cases
+<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+```
+
+---
+
+## 6. Alibaba: Qwen3 Series, Qwen2.5-Max, Qwen3-Next
+
+Qwen models follow **standard chat roles** with strong multilingual support and optional reasoning breaks.
+
+### Prompting Principles
+
+- **Use system role for identity**: "You are Qwen, created by Alibaba Cloud..."
+- **Standard chat roles**: system → user → assistant pattern
+- **Specify output language explicitly**: Especially important for multilingual tasks
+- **Reflective prompting**: For reasoning models, break problems into sub-components
+- **Iterative refinement**: Build problem-solving step by step
+
+### Qwen Prompt Skeleton
+
+```
+System:
+You are Qwen, an expert <ROLE> created by Alibaba Cloud.
+
+Goals:
+- Respond in <TARGET LANGUAGE>
+- Be explicit about assumptions and limitations
+- Break complex problems into steps
+- Verify reasoning before final answer
+
+User:
+**Task**: <clear objective>
+
+**Context**:
+<relevant data>
+
+**Approach**:
+1. First, identify subproblems
+2. For each subproblem, reason and answer
+3. Synthesize final recommendation
+4. List next steps
+```
+
+### Real-World Example: Algorithm Design
+
+```
+System:
+You are Qwen, an expert computer scientist specializing in algorithms.
+Use mathematical notation where appropriate. Respond in English.
+
+User:
+**Task**: Design an algorithm for streaming data aggregation
+
+**Context**:
+- Input: Continuous stream of (timestamp, value) pairs
+- Requirement: Compute rolling 1-hour average efficiently
+- Constraint: Memory limited to O(k) where k = number of unique hours
+
+**Approach**:
+1. Define the problem formally
+2. Describe data structure (what would you use?)
+3. Provide pseudocode
+4. Analyze time and space complexity
+5. Discuss potential optimizations
+```
+
+---
+
+## 7. Mistral: Mistral Large 3 & Ministral 3
+
+Mistral emphasizes **clarity, conciseness, and explicit constraints**.
+
+### Prompting Principles
+
+- **Clear purpose statement**: "You are X, your task is Y"
+- **Hierarchical structure**: Use numbered sections and separators
+- **Balanced length**: Not too long (wastes tokens), not too short (model guesses)
+- **Explicit output format**: Specify exact JSON/table/markdown structure
+- **Response format API**: Leverage JSON mode when available
+
+### Mistral Prompt Skeleton
+
+```
+System:
+You are a meticulous <ROLE>. Follow instructions exactly.
+
+User:
+# Task
+[Clear, specific objective in 1-2 sentences]
+
+# Context
+[Supporting information: documents, data, examples]
+
+# Instructions
+1. [First step]
+2. [Second step]
+3. [Third step]
+
+# Output Format
+Return JSON: 
+{
+  "field1": "description",
+  "field2": "description"
+}
+
+Validate all outputs before responding.
+```
+
+### Real-World Example: Message Classification
+
+```
+System:
+You are a precise content classifier. Return only valid categories.
+
+User:
+# Task
+Classify customer support messages into one category.
+
+# Context
+Categories: ["billing", "technical_issue", "feedback", "account_access", "other"]
+
+# Instructions
+1. Read the message carefully
+2. Match to the single best category
+3. If message mentions multiple issues, pick the primary one
+4. If unclear, use "other"
+
+# Output Format
+Return JSON:
+{
+  "message_id": <integer>,
+  "category": <one_of_categories>,
+  "confidence": <0.0_to_1.0>,
+  "reasoning": <brief_explanation>
+}
+
+Messages to classify:
+1. "I can't login to my account"
+2. "Your service is terrible!"
+3. [more messages...]
+```
+
+---
+
+## 8. DeepSeek: DeepSeek-V3.2 & DeepSeek-R1
+
+**DeepSeek-R1 is fundamentally different**: it's a reasoning-optimized model that requires special prompting.
+
+### DeepSeek-V3.2 (General Purpose)
+
+Use standard structured prompting like Mistral or OpenAI:
+
+```
+System:
+You are a helpful AI assistant specializing in <DOMAIN>.
+Be accurate, clear, and concise.
+
+User:
+Task: <objective>
+Context: <data>
+Requirements: <format and constraints>
+```
+
+### DeepSeek-R1 (Reasoning Model) ⭐ CRITICAL
+
+**These rules are strict and evidence-based:**
+
+- **NO system prompt**: All instructions in the user message
+- **Zero-shot only**: No few-shot examples (degrades reasoning performance)
+- **No explicit CoT**: Don't add "think step by step" (model already reasons internally)
+- **Structured user prompt**: Use markdown or XML tags
+- **Precise output requirements**: Strict formatting
+
+### DeepSeek-R1 Prompt Skeleton
+
+```
+[ROLE]
+You are an advanced reasoning engine for <DOMAIN>.
+
+[PROBLEM]
+<State problem clearly and compactly>
+
+[CONSTRAINTS]
+- Use rigorous, formal reasoning
+- Consider multiple interpretations if ambiguous
+- Provide single final answer
+- Show confidence level
+
+[OUTPUT FORMAT]
+Return JSON:
+{
+  "reasoning_summary": "<3-6 sentences of natural language reasoning>",
+  "final_answer": "<the answer>",
+  "confidence": "<low|medium|high>"
+}
+```
+
+**❌ DO NOT DO THIS WITH R1:**
+```
+Few-shot examples (WRONG - hurts performance)
+Chain-of-thought prompting (WRONG - conflicts with internal reasoning)
+Complex system prompt (WRONG - confuses the model)
+Multiple CoT steps (WRONG - unnecessary for R1)
+```
+
+### Real-World Example: Math Problem (R1)
+
+```
+[ROLE]
+You are an advanced reasoning engine for mathematics.
+
+[PROBLEM]
+Solve: If a train travels 300km in 5 hours, and then 150km in 2 hours,
+what is the average speed for the entire journey?
+
+[CONSTRAINTS]
+- Show all calculations
+- State any assumptions
+- Verify your answer by working backwards
+
+[OUTPUT FORMAT]
+{
+  "reasoning_summary": "<explanation>",
+  "final_answer": "<speed in km/h>",
+  "confidence": "<low|medium|high>"
+}
+```
+
+---
+
+## 9. Cohere: Command A & Command A Reasoning
+
+Cohere emphasizes **preamble-based behavior** and offers **Prompt Tuner** for iterative optimization.
+
+### Prompting Principles
+
+- **Use preamble override**: Replace default with domain-specific persona
+- **Centralize behavior rules**: Put style and tone in preamble, keep user messages focused
+- **Exploit 256k context**: Perfect for large documents, but maintain clear structure
+- **Prompt Tuner**: For production, auto-optimize prompts against evaluation sets
+- **Parameter control**: Adjust temperature and sampling (p, k) per use case
+
+### Cohere Prompt Skeleton
+
+**Preamble (System-like):**
+```
+You are Command A, an enterprise-grade assistant for <DOMAIN>.
+
+Behavioral Rules:
+- Be concise and businesslike
+- Use bullet points only for lists; otherwise use prose
+- Always include brief "Executive Summary"
+- If unsure, state what additional data would help
+- Use professional tone
+```
+
+**User Message:**
+```
+Task: <clear objective>
+
+Context:
+<documents, data, logs>
+
+Requirements:
+1. Executive summary (max 8 sentences)
+2. Table: [Column1 | Column2 | Column3]
+3. Ranked recommendations by impact
+
+Output format: Markdown only.
+```
+
+### Real-World Example: Incident Analysis
+
+```
+[PREAMBLE]
+You are Command A, an incident response specialist for engineering teams.
+Be clear, actionable, and data-driven. Avoid jargon unless necessary.
+Always summarize findings in 5-8 sentences first, then provide detail.
+
+[USER MESSAGE]
+Task: Analyze this production incident and recommend fixes.
+
+Context:
+- System: Payment processing microservice
+- Incident: 15% of transactions failed over 45 minutes
+- Error: Timeout on database connection pool
+- Impact: $50k revenue loss, 2k affected customers
+
+Requirements:
+1. Executive summary of root cause
+2. Table: Impact | Severity | Contributing Factor | Quick Fix
+3. Top 3 long-term solutions ranked by effectiveness
+4. Estimated implementation time for each
+
+Format: Markdown with clear sections.
+```
+
+---
+
+## 10. "Other / Generic" Models
+
+For unknown models, use **portable, safe prompting patterns**:
+
+```
+System:
+You are a highly capable language model.
+
+Rules for every response:
+- Clarify ambiguous questions by stating assumptions
+- If external knowledge needed, say what you'd look up
+- Use markdown for clarity
+- Be concise but information-dense
+
+User:
+**Task**: <what you want>
+
+**Context**:
+<supporting information>
+
+**Constraints**:
+- Output format: <describe>
+- Length: <if relevant>
+- Language: <specify>
+
+Now complete the task.
+```
+
+### Validation Approach
+
+1. Test 3-4 prompt variations
+2. Compare outputs on consistency, accuracy, format compliance
+3. Lock in the version that works best
+4. Iterate when requirements change
+
+---
+
+## 11. Practical Implementation Guide
+
+### Building a Prompt Library
+
+**Organize by model family + use case:**
+
+```
+prompts/
+├── openai/
+│   ├── code_review.md
+│   ├── data_analysis.md
+│   └── content_writing.md
+├── claude/
+│   ├── long_document_analysis.md
+│   ├── research_synthesis.md
+│   └── creative_writing.md
+├── gemini/
+│   ├── multimodal_analysis.md
+│   ├── large_context.md
+│   └── structured_extraction.md
+├── deepseek_r1/
+│   ├── math_reasoning.md
+│   ├── algorithm_design.md
+│   └── logic_puzzles.md
+└── shared/
+    ├── system_personas.md
+    └── output_formats.json
+```
+
+### Template Variables
+
+Use placeholders for reusability:
+
+```
+<ROLE> → "senior engineer", "data scientist", "product manager"
+<DOMAIN> → "healthcare", "finance", "e-commerce"
+<TASK> → Your specific objective
+<CONTEXT> → Documents, data, code
+<FORMAT> → "JSON", "Markdown", "Table"
+<TONE> → "formal", "casual", "technical", "executive"
+<CONSTRAINTS> → Length, style, safety rules
+```
+
+### Quality Checklist for Each Prompt
+
+Before using a prompt in production:
+
+- [ ] **Clarity**: Can someone else understand the task?
+- [ ] **Structure**: Does it follow the recommended format for the model?
+- [ ] **Examples**: Does it include 1-2 examples if appropriate?
+- [ ] **Constraints**: Are output format and style explicit?
+- [ ] **Testing**: Have you tested it 3+ times and compared outputs?
+- [ ] **Edge cases**: Have you tried it with unusual inputs?
+- [ ] **Length**: Is it concise or appropriately detailed?
+- [ ] **Tone**: Does it match the desired professional/casual level?
+
+### Model Selection by Use Case
+
+| Use Case | Best Models | Why |
+|----------|-------------|-----|
+| **Deep mathematical reasoning** | DeepSeek-R1, GPT-5.2 | Explicit reasoning capabilities |
+| **Long document analysis** | Claude 4.5, Gemini 3 Pro | 100k+ context windows |
+| **Code generation & review** | GPT-5.2, Claude 4 Opus | Strong code understanding |
+| **Enterprise workflows** | Cohere Command A, Claude | Long context, consistency, Prompt Tuner |
+| **Multimodal (images, audio)** | Gemini 3, Claude 4 Opus | Multimodal support |
+| **Iterative reasoning** | Grok 4.1, Qwen3-Next | Good at refinement loops |
+| **Open-weight deployment** | Llama 3.1 405B, Qwen3 | No vendor lock-in |
+| **Efficiency (speed/cost)** | Mistral Large 3, Gemini Flash | Optimized for throughput |
+
+### Iterative Refinement Loop
+
+1. **Write initial prompt** using model-specific template
+2. **Test with 5 diverse examples**: trivial, complex, edge cases, typical
+3. **Evaluate outputs**: accuracy, format compliance, tone
+4. **Identify failures**: patterns in where prompt breaks
+5. **Refine**: adjust wording, add examples, tighten constraints
+6. **Re-test**: verify fixes didn't break other cases
+7. **Lock version**: document final version with test results
+8. **Monitor**: periodically test as model versions update
+
+### A/B Testing Prompts
+
+For production systems:
+
+```python
+# Pseudocode
+variants = {
+    "v1": "You are a helpful assistant...",
+    "v2": "You are an expert analyst...",
+    "v3": "As a specialist..."
+}
+
+test_cases = [
+    {"input": "...", "expected": "..."},
+    # ... 10-20 diverse examples
+]
+
+for variant_name, prompt in variants.items():
+    results = []
+    for test in test_cases:
+        output = model.generate(prompt + test["input"])
+        score = evaluate(output, test["expected"])
+        results.append(score)
+    
+    avg_score = sum(results) / len(results)
+    print(f"{variant_name}: {avg_score}")
+    
+# Choose variant with highest average score
+```
+
+---
+
+## 12. Common Pitfalls & How to Avoid Them
+
+| Pitfall | Impact | Fix |
+|---------|--------|-----|
+| **Vague task descriptions** | Model guesses intent, low-quality output | Add specific examples of desired output |
+| **Too much context** | Model dilutes focus, misses key info | Truncate context to 70% of window, re-order by relevance |
+| **Inconsistent format specs** | Output doesn't match expectations | Be explicit: "Return only valid JSON" or "Use markdown H2 headings" |
+| **Mixing system + user instructions** | Conflicting rules, unpredictable behavior | Put all system-level rules in system prompt; user message = task only |
+| **Few-shot examples with DeepSeek-R1** | Degraded reasoning | Remove all examples; use zero-shot only |
+| **No output format specification** | Random output style | Define format: JSON schema, table, markdown sections, etc. |
+| **Task too open-ended** | Model rambles, produces long, unfocused text | Add constraints: max length, specific sections required, specific tone |
+| **Assuming model knows domain context** | Misses nuances, makes incorrect assumptions | Explicitly state domain constraints and terminology |
+| **Not testing before production** | Surprises in production, poor UX | Test with 10+ examples covering edge cases |
+| **Using outdated prompt patterns** | Suboptimal performance | Regularly check model-specific documentation and examples |
+
+---
+
+## 13. Quick Reference: Template by Model
+
+### OpenAI (GPT-5.2)
+```
+[SYSTEM] <persona & rules>
+[USER] ### Task
+<objective>
+### Context
+<data>
+### Requirements
+<format & constraints>
+```
+
+### Claude (4 Opus / 4.5 Sonnet)
+```
+<system> <detailed persona & rules> </system>
+<user>
+<instructions><task & constraints></instructions>
+<context><data></context>
+<examples><good example></examples>
+</user>
+```
+
+### Gemini (3 Pro / Flash)
+```
+<system_instruction> <persona & rules> </system_instruction>
+<user>
+## Context
+<data>
+## Task
+<objective>
+</user>
+```
+
+### Grok (4 / 4.1)
+```
+System: <serious persona & no humor rule>
+User:
+**Task**: <objective>
+**Context**: <data>
+**Output**: 
+1. Summary
+2. Analysis
+3. Risk table
+4. Confirmed Facts vs Assumptions
+```
+
+### DeepSeek-R1 ⭐
+```
+[ROLE] <persona>
+[PROBLEM] <objective>
+[CONSTRAINTS] <rules>
+[OUTPUT FORMAT] <JSON schema>
+
+NO SYSTEM PROMPT, NO FEW-SHOT, NO CoT INSTRUCTIONS
+```
+
+### Cohere Command A
+```
+[PREAMBLE] <persona & rules>
+[USER MESSAGE]
+Task: <objective>
+Context: <data>
+Requirements: <format>
+```
+
+### Mistral (Large 3)
+```
+System: <persona & exact rules>
+User:
+# Task
+<objective>
+# Context
+<data>
+# Instructions
+1. ...
+2. ...
+# Output Format
+<JSON or markdown>
+```
+
+---
+
+## Final Notes
+
+1. **Model capabilities change**: Keep prompts flexible and test after model updates
+2. **Context matters**: The same prompt may perform differently in different domains
+3. **Iteration beats perfection**: Start simple, test, refine based on results
+4. **Document decisions**: Record why you chose certain phrasing; helps with maintenance
+5. **Share learnings**: Build team prompts library; collective knowledge improves results
+
+---
+
+**Last Updated**: January 2026  
+**Scope**: All models in the provided screenshot  
+**Recommended Review Frequency**: Quarterly (model updates, new techniques)

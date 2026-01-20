@@ -282,9 +282,11 @@ function App() {
       {/* Public Routes */}
       <Route path="/" element={<AuthRedirect />} />
       <Route path="/collections" element={
-        <ErrorBoundary>
-          <Collections />
-        </ErrorBoundary>
+        <ProtectedRoute>
+          <ErrorBoundary>
+            <Collections />
+          </ErrorBoundary>
+        </ProtectedRoute>
       } />
 
       {/* Protected Routes */}

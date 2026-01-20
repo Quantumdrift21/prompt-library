@@ -12,7 +12,7 @@ describe('ProfileImage', () => {
     it('renders default user when logged in but no image', () => {
         render(<ProfileImage isLoggedIn={true} profileImageUrl={null} />);
         const img = screen.getByRole('img');
-        expect(img).toHaveAttribute('src', '/assets/images/default_user.png');
+        expect(img).toHaveAttribute('src', '/default-avatar.png');
     });
 
     it('renders custom image when logged in and has image', () => {

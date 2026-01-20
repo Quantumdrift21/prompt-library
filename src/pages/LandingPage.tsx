@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import './LandingPage.css';
 import { TerminalHero } from '../components/landing/TerminalHero';
 import { PromptDiscoveryGrid } from '../components/landing/PromptDiscoveryGrid';
-import { LogoAnimation, PromptLibraryLogo } from '../components/common';
+import { PromptLibraryLogo } from '../components/common';
 import { AuthModal } from '../components/AuthModal';
 import { publicPromptsService } from '../services/publicPromptsService';
 import type { PublicPrompt } from '../types/publicPrompt';
@@ -95,13 +95,13 @@ export const LandingPage = () => {
         <div className="landing-page">
             {/* Navigation */}
             <nav className="landing-nav">
-                <Link to="/landing">
+                <Link to="/landing" className="nav-brand">
                     <PromptLibraryLogo size="medium" />
                 </Link>
                 <div className="nav-links">
-                    <a href="#discover">Discover</a>
-                    <a href="#features">Features</a>
-                    <Link to="/collections">Collections</Link>
+                    <a href="#discover" className="nav-link-item">Discover</a>
+                    <a href="#features" className="nav-link-item">Features</a>
+                    <Link to="/collections" className="nav-link-item">Collections</Link>
                 </div>
                 <div className="nav-actions">
                     <button className="nav-link-login" onClick={() => setShowAuthModal(true)}>Log In</button>
@@ -111,11 +111,8 @@ export const LandingPage = () => {
 
             {/* Hero Section */}
             <header className="landing-hero">
-                <div className="hero-content-wrapper">
-                    <div className="hero-video-container">
-                        <LogoAnimation size="large" />
-                    </div>
-                    <div className="hero-text-content">
+                <div className="hero-content-wrapper hero-content-wrapper--centered">
+                    <div className="hero-text-content hero-text-content--centered">
                         <h1>Master the Art of Context</h1>
                         <p className="hero-subtitle">
                             The definitive collection of optimized system prompts, chain-of-thought templates, and few-shot examples for GPT, Claude, and Llama.

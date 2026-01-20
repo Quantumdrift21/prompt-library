@@ -4,7 +4,9 @@ import { useAuth } from '../hooks';
 import { indexedDbService } from '../services/indexedDb';
 import { learningService } from '../services/learningService';
 import type { Prompt } from '../types';
-import { Hand, Grid, Star, FolderClosed, Sparkles, Gamepad2, Trophy, Flame, Search, Settings, Home, Library } from 'lucide-react';
+import { Hand, Star, FolderClosed, Sparkles, Gamepad2, Trophy, Flame, Settings, Library, Grid } from 'lucide-react';
+import { Modal } from '../components/common/Modal';
+import { PromptEditor } from '../components/PromptEditor';
 import './DashboardHome.css';
 
 /**
@@ -24,7 +26,8 @@ export const DashboardHome = () => {
         favorites: 0,
     });
     const [isLoading, setIsLoading] = useState(true);
-    const [activeTab, setActiveTab] = useState<'all' | 'favorites' | 'collections'>('all');
+    const [activeTab, setActiveTab] = useState<'all' | 'favorites'>('all');
+    const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
     const displayName = user?.user_metadata?.display_name
         || user?.email?.split('@')[0]
@@ -119,8 +122,6 @@ export const DashboardHome = () => {
         loadDashboardData();
     }, [user?.id]);
 
-    const handleCreatePrompt = () => navigate('/library?create=true');
-
     if (isLoading) {
         return (
             <div className="dashboard-home">
@@ -156,11 +157,7 @@ export const DashboardHome = () => {
 
                 {/* Primary Metric */}
                 <div className="sidebar-metric">
-                    <div className="metric-icon-group">
-                        <Grid className="metric-icon icon-3d icon-3d-cyan" />
-                        <Star className="metric-icon icon-3d icon-3d-orange" />
-                        <FolderClosed className="metric-icon icon-3d icon-3d-purple" />
-                    </div>
+
                     <div className="metric-label">All Prompts</div>
                     <div className="metric-sublabel">
                         Explore what's happening with your
@@ -192,14 +189,6 @@ export const DashboardHome = () => {
 
                 {/* Navigation Links */}
                 <nav className="sidebar-nav">
-                    <button className="sidebar-link" onClick={handleCreatePrompt}>
-                        <Sparkles size={18} className="sidebar-icon icon-3d icon-3d-orange" />
-                        <span className="sidebar-label">Create New</span>
-                    </button>
-                    <Link to="/home" className={`sidebar-link ${isActive('/home') ? 'sidebar-link--active' : ''}`}>
-                        <Home size={18} className="sidebar-icon icon-3d icon-3d-cyan" />
-                        <span className="sidebar-label">Home</span>
-                    </Link>
                     <Link to="/library" className={`sidebar-link ${isActive('/library') ? 'sidebar-link--active' : ''}`}>
                         <Library size={18} className="sidebar-icon icon-3d icon-3d-cyan" />
                         <span className="sidebar-label">Library</span>
@@ -225,12 +214,21 @@ export const DashboardHome = () => {
                 <section className="greeting-banner">
                     <h1>Hey, {displayName}! <Hand className="icon-3d icon-3d-orange" style={{ display: 'inline', marginLeft: 8 }} /></h1>
                     <p className="greeting-subtitle">Explore your prompt collection and track your progress.</p>
-                    <button className="greeting-action" title="Refresh">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                            <path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8" />
-                            <path d="M21 3v5h-5" />
-                        </svg>
-                    </button>
+                    <div className="greeting-actions">
+                        <button
+                            className="create-prompt-btn"
+                            onClick={() => setIsCreateModalOpen(true)}
+                        >
+                            <Sparkles size={18} />
+                            Create New Prompt
+                        </button>
+                        <button className="greeting-action" title="Refresh">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                <path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8" />
+                                <path d="M21 3v5h-5" />
+                            </svg>
+                        </button>
+                    </div>
                 </section>
 
                 {/* Timeline Graph */}
@@ -257,7 +255,6 @@ export const DashboardHome = () => {
                     </div>
                 </section>
 
-                {/* Tab Navigation */}
                 <nav className="dashboard-tabs">
                     <button
                         className={`tab-item ${activeTab === 'all' ? 'tab-active' : ''}`}
@@ -273,13 +270,6 @@ export const DashboardHome = () => {
                         <Star size={16} className="tab-icon" style={{ marginRight: 6 }} />
                         Favorites
                     </button>
-                    <button
-                        className={`tab-item ${activeTab === 'collections' ? 'tab-active' : ''}`}
-                        onClick={() => setActiveTab('collections')}
-                    >
-                        <FolderClosed size={16} className="tab-icon" style={{ marginRight: 6 }} />
-                        Collections
-                    </button>
                 </nav>
 
                 {/* Insight Cards Grid */}
@@ -287,27 +277,35 @@ export const DashboardHome = () => {
                     {/* Recent Prompts Card */}
                     <div className="insight-card">
                         <div className="insight-card-header">
-                            <h3>Recent Prompts</h3>
+                            <h3>{activeTab === 'favorites' ? 'Favorite Prompts' : 'Recent Prompts'}</h3>
                             <Link to="/library" className="insight-link">View All →</Link>
                         </div>
                         <div className="insight-card-content">
-                            {recentPrompts.length > 0 ? (
-                                <ul className="recent-list">
-                                    {recentPrompts.map(prompt => (
-                                        <li key={prompt.id} className="recent-item" onClick={() => navigate('/library')}>
-                                            <span className="recent-title">{prompt.title}</span>
-                                            {prompt.favorite && <span className="recent-fav"><Star size={12} fill="currentColor" /></span>}
-                                        </li>
-                                    ))}
-                                </ul>
-                            ) : (
-                                <div className="insight-empty-state">
-                                    <p className="insight-empty">No prompts yet</p>
-                                    <button className="empty-cta" onClick={handleCreatePrompt}>
-                                        Create your first prompt →
-                                    </button>
-                                </div>
-                            )}
+                            {(() => {
+                                const displayPrompts = activeTab === 'favorites'
+                                    ? recentPrompts.filter(p => p.favorite)
+                                    : recentPrompts;
+
+                                return displayPrompts.length > 0 ? (
+                                    <ul className="recent-list">
+                                        {displayPrompts.slice(0, 4).map(p => (
+                                            <li key={p.id} className="recent-item" onClick={() => navigate(`/library?id=${p.id}`)}>
+                                                <span className="recent-title">{p.title}</span>
+                                                {p.favorite && <span className="recent-fav"><Star size={12} fill="currentColor" /></span>}
+                                            </li>
+                                        ))}
+                                    </ul>
+                                ) : (
+                                    <div className="insight-empty-state">
+                                        <p className="insight-empty">
+                                            {activeTab === 'favorites' ? 'No favorite prompts yet' : 'No prompts yet'}
+                                        </p>
+                                        <button className="empty-cta" onClick={() => setIsCreateModalOpen(true)}>
+                                            {activeTab === 'favorites' ? 'Browse prompts →' : 'Create your first prompt →'}
+                                        </button>
+                                    </div>
+                                );
+                            })()}
                         </div>
                     </div>
 
@@ -369,28 +367,62 @@ export const DashboardHome = () => {
                         </div>
                     </div>
 
-                    {/* Quick Actions Card */}
+                    {/* Trending Tags Card */}
                     <div className="insight-card">
                         <div className="insight-card-header">
-                            <h3>Quick Actions</h3>
+                            <h3>Trending Tags</h3>
                         </div>
-                        <div className="insight-card-content actions-list">
-                            <button className="quick-action" onClick={handleCreatePrompt}>
-                                <Sparkles size={18} className="quick-action-icon icon-3d icon-3d-orange" />
-                                Create Prompt
-                            </button>
-                            <Link to="/library" className="quick-action">
-                                <Search size={18} className="quick-action-icon icon-3d icon-3d-cyan" />
-                                Browse Library
-                            </Link>
-                            <Link to="/settings" className="quick-action">
-                                <Settings size={18} className="quick-action-icon icon-3d icon-3d-green" />
-                                Settings
-                            </Link>
+                        <div className="insight-card-content tags-cloud">
+                            {(() => {
+                                // Get tag counts
+                                const tagCounts: Record<string, number> = {};
+                                prompts.forEach(p => {
+                                    p.tags.forEach(tag => {
+                                        tagCounts[tag] = (tagCounts[tag] || 0) + 1;
+                                    });
+                                });
+                                const sortedTags = Object.entries(tagCounts)
+                                    .sort((a, b) => b[1] - a[1])
+                                    .slice(0, 6);
+
+                                return sortedTags.length > 0 ? (
+                                    <div className="tag-pills">
+                                        {sortedTags.map(([tag, count]) => (
+                                            <span key={tag} className="tag-pill" onClick={() => navigate(`/library?tag=${tag}`)}>
+                                                #{tag} <span className="tag-count">({count})</span>
+                                            </span>
+                                        ))}
+                                    </div>
+                                ) : (
+                                    <p className="insight-empty">Add tags to your prompts to see trends</p>
+                                );
+                            })()}
                         </div>
                     </div>
                 </section>
             </main>
+
+            {/* Create Prompt Modal */}
+            <Modal
+                isOpen={isCreateModalOpen}
+                onClose={() => setIsCreateModalOpen(false)}
+                title="Create New Prompt"
+                size="lg"
+            >
+                <PromptEditor
+                    prompt={null}
+                    onSave={async (data) => {
+                        await indexedDbService.create(data);
+                        setIsCreateModalOpen(false);
+                        // Refresh prompts
+                        const allPrompts = await indexedDbService.getAll();
+                        setPrompts(allPrompts);
+                        setRecentPrompts(allPrompts.slice(0, 5));
+                    }}
+                    onCancel={() => setIsCreateModalOpen(false)}
+                    autoFocusTitle
+                />
+            </Modal>
         </div>
     );
 };

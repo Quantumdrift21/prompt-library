@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
-import { BrainCircuit, ChevronDown, ChevronRight } from 'lucide-react';
+import { BrainCircuit, ChevronDown, ChevronRight, Cpu } from 'lucide-react';
 import type { StudySessionData, KnowledgeLevel, StudyGoal, StudyMethod } from '../../types/study';
 import { MethodSelector } from './MethodSelector';
 import { studyPromptService } from '../../services/studyPromptService';
+import { AI_MODELS } from '../../data/aiModels';
 import './CognitiveBuilder.css';
 
 interface CognitiveBuilderProps {
@@ -11,8 +12,9 @@ interface CognitiveBuilderProps {
 
 export const CognitiveBuilder = ({ onSessionChange }: CognitiveBuilderProps) => {
     const [topic, setTopic] = useState('');
-    const [method, setMethod] = useState<StudyMethod>('Feynman');
+    const [method, setMethod] = useState<StudyMethod>('Feynman Technique');
     const [knowledgeLevel, setKnowledgeLevel] = useState<KnowledgeLevel>('Beginner');
+    const [aiModel, setAiModel] = useState<string>(AI_MODELS[0].id);
     const [goal, setGoal] = useState<StudyGoal>('Summarize');
     const [isAdvanced, setIsAdvanced] = useState(false);
 
@@ -25,6 +27,7 @@ export const CognitiveBuilder = ({ onSessionChange }: CognitiveBuilderProps) => 
             method,
             knowledgeLevel,
             goal,
+            aiModel,
             generatedPrompt: '',
             activeNotes: '' // Not managed here, but part of the contract
         };
@@ -34,12 +37,17 @@ export const CognitiveBuilder = ({ onSessionChange }: CognitiveBuilderProps) => 
 
         // Notify parent
         onSessionChange({ ...data, generatedPrompt: prompt });
-    }, [topic, method, knowledgeLevel, goal, onSessionChange]);
+    }, [topic, method, knowledgeLevel, goal, aiModel, onSessionChange]);
 
     return (
         <div className="cognitive-builder">
             <div className="builder-header">
-                <h2><BrainCircuit className="icon-3d icon-3d-cyan" style={{ marginRight: 8, verticalAlign: 'middle' }} /> Cognitive Builder</h2>
+                <h2>
+                    <span className="header-icon-wrapper icon-3d-cyan">
+                        <BrainCircuit size={20} />
+                    </span>
+                    Cognitive Builder
+                </h2>
             </div>
 
             {/* Main Topic Input */}
@@ -52,6 +60,25 @@ export const CognitiveBuilder = ({ onSessionChange }: CognitiveBuilderProps) => 
                     value={topic}
                     onChange={(e) => setTopic(e.target.value)}
                 />
+            </div>
+
+            {/* AI Model Selector - New Addition */}
+            <div className="form-group">
+                <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <Cpu size={14} className="text-secondary" />
+                    Target AI Model
+                </label>
+                <select
+                    className="form-input"
+                    value={aiModel}
+                    onChange={(e) => setAiModel(e.target.value)}
+                >
+                    {AI_MODELS.map((model) => (
+                        <option key={model.id} value={model.id}>
+                            {model.label}
+                        </option>
+                    ))}
+                </select>
             </div>
 
             {/* Method Selector */}

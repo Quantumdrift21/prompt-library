@@ -50,6 +50,11 @@
     gap: 0.5rem;
 }
 
+.builder-header h2 svg {
+    color: var(--color-accent-teal, #00d4ff);
+    flex-shrink: 0;
+}
+
 .form-group {
     display: flex;
     flex-direction: column;
@@ -104,27 +109,42 @@
 
 .prompt-preview {
     margin-top: auto;
-    background: rgba(0, 0, 0, 0.3);
-    border: 1px dashed rgba(255, 255, 255, 0.2);
-    border-radius: 8px;
-    padding: 1rem;
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 12px;
+    padding: 1.25rem;
+    box-shadow:
+        0 4px 6px -1px rgba(0, 0, 0, 0.1),
+        0 2px 4px -1px rgba(0, 0, 0, 0.06),
+        inset 0 2px 4px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+}
+
+.prompt-preview:hover {
+    transform: translateY(-2px);
+    box-shadow:
+        0 10px 15px -3px rgba(0, 0, 0, 0.1),
+        0 4px 6px -2px rgba(0, 0, 0, 0.05);
 }
 
 .preview-label {
     font-size: 0.75rem;
     text-transform: uppercase;
-    color: var(--text-tertiary);
+    color: #4a4a4a;
+    font-weight: 700;
     letter-spacing: 0.05em;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.75rem;
     display: block;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    padding-bottom: 0.5rem;
 }
 
 .preview-content {
-    font-family: monospace;
-    font-size: 0.85rem;
-    color: var(--text-secondary);
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    font-size: 0.9rem;
+    color: #1a1a1a;
     white-space: pre-wrap;
-    line-height: 1.4;
-    max-height: 150px;
+    line-height: 1.6;
+    max-height: 200px;
     overflow-y: auto;
 }

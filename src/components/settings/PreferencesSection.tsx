@@ -1,91 +1,13 @@
-import { useTheme } from '../../hooks';
 import { useState } from 'react';
 
 type SyncFrequency = 'realtime' | '5min' | '15min' | 'manual';
 
 export default function PreferencesSection() {
-    const { isDarkMode, setTheme } = useTheme();
     const [syncFrequency, setSyncFrequency] = useState<SyncFrequency>('realtime');
-
-    // Determine current theme mode for the selector
-    const currentTheme = isDarkMode ? 'dark' : 'light';
 
     return (
         <div className="section-preferences">
-            {/* Appearance */}
-            <div className="settings-glass-card">
-                <h3 className="settings-glass-card__title">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <circle cx="12" cy="12" r="5" />
-                        <line x1="12" y1="1" x2="12" y2="3" />
-                        <line x1="12" y1="21" x2="12" y2="23" />
-                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
-                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
-                        <line x1="1" y1="12" x2="3" y2="12" />
-                        <line x1="21" y1="12" x2="23" y2="12" />
-                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
-                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
-                    </svg>
-                    Appearance
-                </h3>
 
-                <div style={{ marginBottom: '1.5rem' }}>
-                    <label className="settings-label">Theme</label>
-                    <div style={{
-                        display: 'flex',
-                        gap: '8px',
-                        marginTop: '0.5rem'
-                    }}>
-                        {(['light', 'dark', 'system'] as const).map((theme) => (
-                            <button
-                                key={theme}
-                                onClick={() => setTheme(theme)}
-                                style={{
-                                    flex: 1,
-                                    padding: '0.75rem 1rem',
-                                    background: currentTheme === theme || (theme === 'system')
-                                        ? (theme === currentTheme ? 'var(--accent-primary)' : 'var(--color-surface)')
-                                        : 'var(--color-surface)',
-                                    border: currentTheme === theme
-                                        ? '1px solid var(--accent-primary)'
-                                        : '1px solid var(--color-border)',
-                                    borderRadius: 'var(--radius-sm)',
-                                    color: currentTheme === theme ? 'white' : 'var(--color-text)',
-                                    cursor: 'pointer',
-                                    fontWeight: 500,
-                                    fontSize: '0.9rem',
-                                    transition: 'all 0.2s',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    gap: '6px'
-                                }}
-                            >
-                                {theme === 'light' && (
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ width: 16, height: 16 }}>
-                                        <circle cx="12" cy="12" r="5" />
-                                        <line x1="12" y1="1" x2="12" y2="3" />
-                                        <line x1="12" y1="21" x2="12" y2="23" />
-                                    </svg>
-                                )}
-                                {theme === 'dark' && (
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ width: 16, height: 16 }}>
-                                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
-                                    </svg>
-                                )}
-                                {theme === 'system' && (
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ width: 16, height: 16 }}>
-                                        <rect x="2" y="3" width="20" height="14" rx="2" ry="2" />
-                                        <line x1="8" y1="21" x2="16" y2="21" />
-                                        <line x1="12" y1="17" x2="12" y2="21" />
-                                    </svg>
-                                )}
-                                {theme.charAt(0).toUpperCase() + theme.slice(1)}
-                            </button>
-                        ))}
-                    </div>
-                </div>
-            </div>
 
             {/* Sync Settings */}
             <div className="settings-glass-card">

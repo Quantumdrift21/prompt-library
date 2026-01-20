@@ -122,9 +122,11 @@ export const publicPromptsService = {
                 .order('rating', { ascending: false })
                 .range(from, to);
 
-            // Filter by search query (title ilike)
+            // Filter by search query (title ilike) - sanitize to prevent SQL injection
             if (query && query.trim()) {
-                request = request.ilike('title', `%${query.trim()}%`);
+                // Escape SQL LIKE wildcards for defense in depth
+                const sanitizedQuery = query.trim().replace(/[%_\\]/g, '\\$&');
+                request = request.ilike('title', `%${sanitizedQuery}%`);
             }
 
             // Filter by tags (contains any)

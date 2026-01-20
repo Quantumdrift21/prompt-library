@@ -23,51 +23,106 @@ const METHOD_DETAILS: Record<StudyMethod, {
             'Attempt to answer them without looking at notes.',
             'Review the answers to identify gaps.'
         ],
-        bestFor: ['Exam Prep', 'Memorization', 'Deep Understanding']
+        bestFor: ['Exam Prep', 'Memorization', 'Long-term Retention']
     },
-    'Feynman': {
+    'Feynman Technique': {
         icon: BookOpen,
         color: 'icon-3d-cyan',
         tagline: 'If you can\'t explain it simply, you don\'t understand it.',
         howItWorks: [
-            'Explain the concept in simple terms.',
-            'Identify areas where your explanation is shaky.',
+            'Explain the concept in simple terms (as if to a child).',
+            'Identify areas where your explanation falters.',
             'Review source material to simplify further.'
         ],
-        bestFor: ['Complex Concepts', 'Simplification', 'Teaching']
+        bestFor: ['Complex Concepts', 'Deep Understanding', 'Identifying Gaps']
     },
-    'Cornell': {
+    'Cornell Notes': {
         icon: BookOpen,
         color: 'icon-3d-purple',
         tagline: 'Structured note-taking for efficient review.',
         howItWorks: [
-            'Divide notes into Cues, Main Notes, and Summary.',
-            'Record key points during study.',
-            'Review by covering the notes and using cues.'
+            'Divide notes into Cues (Left), Notes (Right), Summary (Bottom).',
+            'Record key points in the main area.',
+            'After class, write questions in the cue column and summarize.'
         ],
         bestFor: ['Lectures', 'Textbook Reading', 'Structured Review']
     },
-    'Blurting': {
-        icon: BookOpen,
-        color: 'icon-3d-pink',
-        tagline: 'Empty your brain to find what sticks.',
-        howItWorks: [
-            'Read a section of text.',
-            'Close the book and write everything you remember.',
-            'Compare with the text to find missing details.'
-        ],
-        bestFor: ['Fact Retention', 'History', 'Vocab']
-    },
-    'Leitner': {
+    'Distributed Practice': {
         icon: BookOpen,
         color: 'icon-3d-green',
-        tagline: 'Spaced repetition to hack your forgetting curve.',
+        tagline: 'Space your study to hack the forgetting curve.',
         howItWorks: [
-            'Use flashcards for key concepts.',
-            'Review difficult cards more frequently.',
-            'Move mastered cards to less frequent boxes.'
+            'Study material in short sessions over many days.',
+            'Increase intervals between reviews (1 day, 3 days, 1 week).',
+            'Focus on older material that is about to be forgotten.'
         ],
         bestFor: ['Long-term Retention', 'Languages', 'Definitions']
+    },
+    'Pomodoro': {
+        icon: BookOpen,
+        color: 'icon-3d-pink',
+        tagline: 'Focus intensely, then rest.',
+        howItWorks: [
+            'Set a timer for 25 minutes of deep work.',
+            'Take a 5-minute break completely away from work.',
+            'After 4 cycles, take a longer 15-30 minute break.'
+        ],
+        bestFor: ['Procrastination', 'Burnout Prevention', 'Coding']
+    },
+    'Mind Mapping': {
+        icon: BookOpen,
+        color: 'icon-3d-cyan',
+        tagline: 'Visualize connections between ideas.',
+        howItWorks: [
+            'Start with the main concept in the center.',
+            'Branch out into major themes.',
+            'Use keywords and images to connect related sub-ideas.'
+        ],
+        bestFor: ['Visual Learners', 'Brainstorming', 'Overviews']
+    },
+    'Elaborative Interrogation': {
+        icon: BookOpen,
+        color: 'icon-3d-orange',
+        tagline: 'Ask "Why?" until you understand the core.',
+        howItWorks: [
+            'Take a statement of fact.',
+            'Ask yourself "Why is this true?" or "How does this work?".',
+            'Generate an explanation connecting it to what you already know.'
+        ],
+        bestFor: ['Deep Facts', 'Causal Relationships', 'Science']
+    },
+    'Interleaving': {
+        icon: BookOpen,
+        color: 'icon-3d-purple',
+        tagline: 'Mix it up to learn strategies, not just rote steps.',
+        howItWorks: [
+            'Mix different types of problems in one session.',
+            'Force yourself to identifying the CORRECT strategy first.',
+            'Avoid doing "blocks" of the same problem type.'
+        ],
+        bestFor: ['Math', 'Physics', 'Problem Solving']
+    },
+    'Rereading': {
+        icon: BookOpen,
+        color: 'icon-3d-gray',
+        tagline: 'Good for familiarity, bad for mastery.',
+        howItWorks: [
+            'Review the text again.',
+            'Use only for initial exposure or very difficult passages.',
+            'Combine with active methods for actual learning.'
+        ],
+        bestFor: ['First Exposure', 'Low Energy', 'Basic Review']
+    },
+    'Highlighting': {
+        icon: BookOpen,
+        color: 'icon-3d-gray',
+        tagline: 'Use sparingly to mark key signposts.',
+        howItWorks: [
+            'Read the text first without marking.',
+            'Go back and mark only the top 10% critical info.',
+            'Never highlight without understanding first.'
+        ],
+        bestFor: ['First Pass', 'Identifying Keywords']
     }
 };
 

@@ -4,6 +4,8 @@ import { CognitiveBuilder } from '../components/study/CognitiveBuilder';
 import { ActiveNotes } from '../components/study/ActiveNotes';
 import type { StudySessionData, StudyMethod } from '../types/study';
 import { MethodSidebar } from '../components/study/MethodSidebar';
+import { DarkLayout } from '../components/layout';
+import { useAuth } from '../hooks';
 import './LearnPage.css';
 
 /**
@@ -12,6 +14,9 @@ import './LearnPage.css';
  * [Debug: MethodDescription commented out]
  */
 export const LearnPage = () => {
+    const { user } = useAuth();
+    const userName = user?.email?.split('@')[0] || 'Guest';
+
     // State to hold the current session data from the builder
     const [sessionData, setSessionData] = useState<StudySessionData | null>(null);
     const [notesContent, setNotesContent] = useState('');
@@ -30,39 +35,43 @@ export const LearnPage = () => {
     };
 
     // Default to layman/Feynman if no session yet
-    const currentMethod: StudyMethod = sessionData?.method || 'Feynman';
+    const currentMethod: StudyMethod = sessionData?.method || 'Feynman Technique';
 
     return (
-        <div className="learn-page">
-            <div className="learn-container">
-                <header className="learn-header">
-                    <h1>
-                        <BookOpen className="icon-3d icon-3d-cyan" style={{ marginRight: 12, verticalAlign: 'middle' }} />
-                        Method-First Learning
-                    </h1>
-                </header>
+        <DarkLayout userName={userName}>
+            <div className="learn-page">
+                <div className="learn-container">
+                    <header className="learn-header">
+                        <h1>
+                            <span className="header-icon-wrapper icon-3d-cyan">
+                                <BookOpen size={24} />
+                            </span>
+                            Method-First Learning
+                        </h1>
+                    </header>
 
-                <main className="learn-grid">
-                    {/* Left: Method Context */}
-                    <aside className="method-sidebar">
-                        <MethodSidebar method={currentMethod} />
-                    </aside>
+                    <main className="learn-grid">
+                        {/* Left: Method Context */}
+                        <aside className="method-sidebar">
+                            <MethodSidebar method={currentMethod} />
+                        </aside>
 
-                    {/* Middle: Inputs */}
-                    <section className="builder-section">
-                        <CognitiveBuilder onSessionChange={handleSessionChange} />
-                    </section>
+                        {/* Middle: Inputs */}
+                        <section className="builder-section">
+                            <CognitiveBuilder onSessionChange={handleSessionChange} />
+                        </section>
 
-                    {/* Right: Workspace */}
-                    <section className="notes-section">
-                        <ActiveNotes
-                            content={notesContent}
-                            onChange={setNotesContent}
-                            onCopyFromPreview={handleCopyPreview}
-                        />
-                    </section>
-                </main>
+                        {/* Right: Workspace */}
+                        <section className="notes-section">
+                            <ActiveNotes
+                                content={notesContent}
+                                onChange={setNotesContent}
+                                onCopyFromPreview={handleCopyPreview}
+                            />
+                        </section>
+                    </main>
+                </div>
             </div>
-        </div>
+        </DarkLayout>
     );
 };

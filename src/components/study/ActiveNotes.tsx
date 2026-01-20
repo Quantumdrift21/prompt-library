@@ -11,7 +11,12 @@ export const ActiveNotes = ({ content, onChange, onCopyFromPreview }: ActiveNote
     return (
         <div className="active-notes">
             <div className="notes-header">
-                <h2><FileEdit className="icon-3d icon-3d-purple" style={{ marginRight: 8, verticalAlign: 'middle' }} /> Active Notes</h2>
+                <h2>
+                    <span className="header-icon-wrapper icon-3d-purple">
+                        <FileEdit size={20} />
+                    </span>
+                    Active Notes
+                </h2>
                 <div className="notes-actions">
                     <button
                         className="btn-icon"
